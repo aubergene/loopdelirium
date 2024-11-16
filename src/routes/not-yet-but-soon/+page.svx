@@ -1,3 +1,5 @@
+![NOT YET, BUT SOON](img/not-yet-but-soon.jpg)
+
 # NOT YET, BUT SOON
 
 Thu - Sun 3pm - 8pm<br>
@@ -7,11 +9,13 @@ Hypha Gallery 2<br>
 Sugar House Island<br>
 107 High Street London E15 4QZ
 
-<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d19856.09242593031!2d-0.024965272143553374!3d51.53134792994257!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x48761dbbd906b75f%3A0xc217413b8afaedc5!2sHypha%20Gallery%202%20Sugar%20House%20Island!5e0!3m2!1sen!2suk!4v1731778219127!5m2!1sen!2suk" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+<iframe title="Google map of gallery location" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d19856.09242593031!2d-0.024965272143553374!3d51.53134792994257!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x48761dbbd906b75f%3A0xc217413b8afaedc5!2sHypha%20Gallery%202%20Sugar%20House%20Island!5e0!3m2!1sen!2suk!4v1731778219127!5m2!1sen!2suk" width="600" height="250" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
 
 ## Events
 
-- Sunday 17 November - 4pm - Exhibition tour & artist talks
+All events are free
+
+- Sunday 17 November - 4pm - [Exhibition tour & artist talks](https://www.eventbrite.co.uk/e/loopdelirium-artist-talks-tickets-1084273624599)
 - Friday 22 November - 4pm - Workshop: AI and the future of film
 - Saturday 30 November - 4pm - Workshop: Anatomy of an installation: Concept, Code Design and Fabrication
 - Thursday 5 December - 4:30pm - 8pm - HINTERLANDS: A mixed-reality dance work about the speculative futures of human evolution
