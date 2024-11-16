@@ -4,8 +4,6 @@
 
 <h1>loop[delirium]</h1>
 
-<h2>About</h2>
-
 <h2>Shows</h2>
 
 <ul>
