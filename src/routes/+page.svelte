@@ -1,2 +1,15 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://svelte.dev/docs/kit">svelte.dev/docs/kit</a> to read the documentation</p>
+<script>
+	import { base } from '$app/paths';
+</script>
+
+<h1>loop[delirium]</h1>
+
+<h2>About</h2>
+
+<h2>Shows</h2>
+
+<ul>
+	<li>
+		<a href="{base}/not-yet-but-soon">not yet, but soon</a> - 14 Nov - 7 Dec - Sugar House Island
+	</li>
+</ul>
