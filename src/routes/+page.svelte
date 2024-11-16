@@ -4,6 +4,10 @@
 
 <h1>loop[delirium]</h1>
 
+<p>
+	Follow us on instagram <a href="https://www.instagram.com/loopdelirium">@loopdelirium</a>.
+</p>
+
 <h2>Shows</h2>
 
 <ul>
