@@ -1,24 +1,4 @@
-<!doctype html>
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" href="./favicon.png" />
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		
-		<link href="./_app/immutable/assets/0.BpuVmZQM.css" rel="stylesheet">
-		<link rel="modulepreload" href="./_app/immutable/entry/start.1APkLWE0.js">
-		<link rel="modulepreload" href="./_app/immutable/chunks/entry.ByRNw9Y9.js">
-		<link rel="modulepreload" href="./_app/immutable/chunks/runtime.BYB2da0C.js">
-		<link rel="modulepreload" href="./_app/immutable/chunks/paths.L1xD4vq4.js">
-		<link rel="modulepreload" href="./_app/immutable/entry/app.CLEdbcSp.js">
-		<link rel="modulepreload" href="./_app/immutable/chunks/store.Bw9OJk-A.js">
-		<link rel="modulepreload" href="./_app/immutable/chunks/disclose-version.CGPcbeIT.js">
-		<link rel="modulepreload" href="./_app/immutable/nodes/0.BnepVy2T.js">
-		<link rel="modulepreload" href="./_app/immutable/nodes/3.wdAvcBHC.js">
-		<link rel="modulepreload" href="./_app/immutable/chunks/legacy.C_7NJfSH.js">
-	</head>
-	<body data-sveltekit-preload-data="hover">
-		<div style="display: contents"><!--[--><!--[--><!----><div class="container svelte-j74kbn"><!----><h1>NOT YET, BUT SOON</h1> <p>Thu - Sun 3pm - 8pm<br> 14 Nov 2024 - 6 Dec 2024</p> <p>Hypha Gallery 2<br> Sugar House Island<br> 107 High Street London E15 4QZ</p> <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d19856.09242593031!2d-0.024965272143553374!3d51.53134792994257!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x48761dbbd906b75f%3A0xc217413b8afaedc5!2sHypha%20Gallery%202%20Sugar%20House%20Island!5e0!3m2!1sen!2suk!4v1731778219127!5m2!1sen!2suk" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe> <h2>Events</h2> <ul><li>Sunday 17 November - 4pm - Exhibition tour &amp; artist talks</li> <li>Friday 22 November - 4pm - Workshop: AI and the future of film</li> <li>Saturday 30 November - 4pm - Workshop: Anatomy of an installation: Concept, Code Design and Fabrication</li> <li>Thursday 5 December - 4:30pm - 8pm - HINTERLANDS: A mixed-reality dance work about the speculative futures of human evolution</li> <li>Friday 6th December - 5pm - Closing night event - performances with special guests to be announced</li></ul> <h2>Artworks</h2> <h3>1. Prism (February 2024) - Nathan Bayliss</h3> <p>Generative AI Film, 9 min 14 sec</p> <h3>2. Prism 2.0 (October 2024) - Nathan Bayliss</h3> <p>Generative AI Film, 8 min 17 sec</p> <p>Prism is a collection of AI generated audio / visual fragments
+import{t as a,a as i}from"../chunks/disclose-version.CGPcbeIT.js";import"../chunks/legacy.C_7NJfSH.js";import{s as n,f as s,n as o}from"../chunks/runtime.BYB2da0C.js";var r=a(`<h1>NOT YET, BUT SOON</h1> <p>Thu - Sun 3pm - 8pm<br> 14 Nov 2024 - 6 Dec 2024</p> <p>Hypha Gallery 2<br> Sugar House Island<br> 107 High Street London E15 4QZ</p> <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d19856.09242593031!2d-0.024965272143553374!3d51.53134792994257!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x48761dbbd906b75f%3A0xc217413b8afaedc5!2sHypha%20Gallery%202%20Sugar%20House%20Island!5e0!3m2!1sen!2suk!4v1731778219127!5m2!1sen!2suk" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe> <h2>Events</h2> <ul><li>Sunday 17 November - 4pm - Exhibition tour &amp; artist talks</li> <li>Friday 22 November - 4pm - Workshop: AI and the future of film</li> <li>Saturday 30 November - 4pm - Workshop: Anatomy of an installation: Concept, Code Design and Fabrication</li> <li>Thursday 5 December - 4:30pm - 8pm - HINTERLANDS: A mixed-reality dance work about the speculative futures of human evolution</li> <li>Friday 6th December - 5pm - Closing night event - performances with special guests to be announced</li></ul> <h2>Artworks</h2> <h3>1. Prism (February 2024) - Nathan Bayliss</h3> <p>Generative AI Film, 9 min 14 sec</p> <h3>2. Prism 2.0 (October 2024) - Nathan Bayliss</h3> <p>Generative AI Film, 8 min 17 sec</p> <p>Prism is a collection of AI generated audio / visual fragments
 created using text-based generative AI models responding to a
 series of minimalist prompts that appear before each chapter.
 Typically, when using text based generative AI, prompting is con-
@@ -147,31 +127,4 @@ technology to access even the most basic information. Through its
 absurd functionality, QR Clock questions the utility-driven narratives
 of contemporary devices, inviting us to pause and reflect on the
 sometimes unnecessary complexity we impose on simple acts, like
-knowing the time.</p><!----><!----></div><!----><!--]--> <!--[!--><!--]--><!--]-->
-			
-			<script>
-				{
-					__sveltekit_hz12lz = {
-						base: new URL(".", location).pathname.slice(0, -1)
-					};
-
-					const element = document.currentScript.parentElement;
-
-					const data = [null,null];
-
-					Promise.all([
-						import("./_app/immutable/entry/start.1APkLWE0.js"),
-						import("./_app/immutable/entry/app.CLEdbcSp.js")
-					]).then(([kit, app]) => {
-						kit.start(app, element, {
-							node_ids: [0, 3],
-							data,
-							form: null,
-							error: null
-						});
-					});
-				}
-			</script>
-		</div>
-	</body>
-</html>
+knowing the time.</p>`,1);function m(t){var e=r();n(s(e),6),o(112),i(t,e)}export{m as component};
