@@ -14,40 +14,63 @@
 <h2>Artworks</h2>
 
 {#each data.rows as row}
-	<div class="artwork">
-		<div class="qr">
-			<QrCode value="{url}#{row.id}" size="100" />
-		</div>
-		<!-- svelte-ignore a11y_click_events_have_key_events -->
-		<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
-		<h3>
+	<div class="card">
+		<div class="id">
 			{row.id}
-			{row.title} ({row.date}) - {row.artist}
-		</h3>
-		<p class="details">{[row.medium, row.dimensions].join(', ')}</p>
-		{@html parse(row.description)}
+		</div>
+		<div class="artwork">
+			<div class="title">
+				<b>{row.title}</b> ({row.date})
+			</div>
+			<div class="artist">
+				{row.artist}
+			</div>
+			<p class="details">
+				{row.medium}<br />
+				{row.dimensions}
+			</p>
+			<div class="qr">
+				<QrCode value="{url}#{row.id}" size="80" />
+			</div>
+		</div>
 	</div>
 {/each}
 
 <style>
-	.details {
-		text-transform: uppercase;
-		font-size: 13px;
-		color: #666;
+	@media print {
+		.card {
+			break-inside: avoid;
+		}
 	}
-
-	h3 {
-		margin-top: 0;
-	}
-
-	.artwork {
+	.card {
+		display: flex;
 		border: 1px solid #999;
 		margin: 2em;
 		padding: 2em;
+		width: 12cm;
+		height: 6cm;
+	}
+
+	.id {
+		padding-right: 1em;
+	}
+
+	.artwork {
+		position: relative;
+		flex-grow: 2;
+		font-size: 18px;
+	}
+
+	.details {
+		font-size: 15px;
+		text-transform: uppercase;
+		color: #666;
 	}
 
 	.qr {
-		float: right;
-		margin-left: 32px;
+		position: absolute;
+		bottom: 0;
+		right: 0;
+		margin-left: 1em;
 	}
 </style>
