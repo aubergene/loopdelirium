@@ -2,6 +2,10 @@
 	import { base } from '$app/paths';
 </script>
 
+<svelte:head>
+	<title>loop[delirium]</title>
+</svelte:head>
+
 <h1>loop[delirium]</h1>
 
 <p>
