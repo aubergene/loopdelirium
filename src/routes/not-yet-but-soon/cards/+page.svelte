@@ -30,7 +30,7 @@
 				{row.dimensions}
 			</p>
 			<div class="qr">
-				<QrCode value="{url}#{row.id}" size="80" />
+				<QrCode value="{url}#{row.id}" size={60} />
 			</div>
 		</div>
 	</div>
@@ -44,27 +44,31 @@
 	}
 	.card {
 		display: flex;
-		border: 1px solid #999;
+		border: 1px dashed #ccc;
 		margin: 2em;
-		padding: 2em;
+		padding: 1.6em;
 		width: 12cm;
-		height: 6cm;
+		height: 5cm;
+		box-sizing: border-box;
 	}
 
 	.id {
-		padding-right: 1em;
+		padding-right: 0.8em;
 	}
 
 	.artwork {
 		position: relative;
 		flex-grow: 2;
 		font-size: 18px;
+		line-height: 22px;
 	}
 
 	.details {
-		font-size: 15px;
+		font-size: 14px;
+		line-height: 16px;
 		text-transform: uppercase;
 		color: #666;
+		width: calc(100% - 70px);
 	}
 
 	.qr {
@@ -72,5 +76,9 @@
 		bottom: 0;
 		right: 0;
 		margin-left: 1em;
+	}
+
+	.qr > :global(img) {
+		display: block;
 	}
 </style>
