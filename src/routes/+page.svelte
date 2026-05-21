@@ -1,6 +1,7 @@
 <script>
 	import { base } from '$app/paths';
 	import LoopText from '$lib/LoopText.svelte';
+	import TwistText from '$lib/TwistText.svelte';
 </script>
 
 <svelte:head>
@@ -14,6 +15,8 @@
 <p>
 	Follow us on instagram <a href="https://www.instagram.com/loopdelirium">@loopdelirium</a>.
 </p>
+
+<TwistText />
 
 <h2>Shows</h2>
 
