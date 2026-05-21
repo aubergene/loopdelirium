@@ -1,5 +1,6 @@
 <script>
 	import { base } from '$app/paths';
+	import LoopText from '$lib/LoopText.svelte';
 </script>
 
 <svelte:head>
@@ -7,6 +8,8 @@
 </svelte:head>
 
 <h1>loop[delirium]</h1>
+
+<LoopText text="loop  delirium  " length={8} />
 
 <p>
 	Follow us on instagram <a href="https://www.instagram.com/loopdelirium">@loopdelirium</a>.
