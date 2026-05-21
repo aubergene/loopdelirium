@@ -16,7 +16,8 @@
 	Follow us on instagram <a href="https://www.instagram.com/loopdelirium">@loopdelirium</a>.
 </p>
 
-<TwistText />
+<TwistText twist={0.5} />
+<TwistText twist={5.5} />
 
 <h2>Shows</h2>
 

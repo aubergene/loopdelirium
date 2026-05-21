@@ -16,6 +16,7 @@ precision highp float;
 uniform float uTime;        /* seconds since start                       */
 uniform vec2  uResolution;  /* canvas width × height in physical pixels  */
 uniform vec2  uMouse;       /* mouse position, both components in [0, 1] */
+uniform float uTwist;       /* base twist rate in radians/unit (default 1.8) */
 
 
 // ── Domain warp: twist ─────────────────────────────────────────────────────
@@ -28,10 +29,12 @@ uniform vec2  uMouse;       /* mouse position, both components in [0, 1] */
 //
 // k = twist rate (radians of rotation per unit of Y).
 vec3 twist(vec3 p, float k) {
-  float a = k * p.y;         /* rotation angle at this height           */
-  float c = cos(a), s = sin(a);
-  /* 2D rotation matrix applied to the (X, Z) components                */
-  return vec3(c*p.x - s*p.z,  p.y,  s*p.x + c*p.z);
+  float c = cos(k * p.y), s = sin(k * p.y);
+  /* GLSL mat2 is column-major: mat2(c,-s,s,c) has col0=(c,-s), col1=(s,c)
+   * mat * (p.x, p.z) = (c*p.x + s*p.z,  -s*p.x + c*p.z)
+   * Original p.y moves to the z slot so length(q.xz) is no longer
+   * invariant under this rotation — that's what makes the twist visible. */
+  return vec3(c*p.x + s*p.z,  -s*p.x + c*p.z,  p.y);
 }
 
 
@@ -57,9 +60,7 @@ float sdTorus(vec3 p, vec2 r) {
 // Return the distance from p to the nearest surface.
 // Combine multiple shapes with min() (union), -min() (subtraction), etc.
 float scene(vec3 p) {
-  /* Animate twist amount: oscillates between 1.2 and 2.4 over ~15 s    */
-  float k  = 1.8 + 0.6 * sin(uTime * 0.4);
-  vec3  tp = twist(p, k);
+  vec3  tp = twist(p, uTwist);
   return sdTorus(tp, vec2(1.1, 0.38));
 }
 
@@ -146,7 +147,7 @@ void main() {
 
   // ── March! ────────────────────────────────────────────────────────────
   float t   = march(ro, rd);
-  vec3  col = vec3(0.02, 0.02, 0.05);  /* dark background                  */
+  vec3  col = vec3(0.0);
 
   if (t > 0.0) {
     vec3 pos = ro + t * rd;
