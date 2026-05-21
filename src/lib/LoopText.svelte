@@ -48,29 +48,33 @@
 	let rotateXDeg = $state(0);
 	let debugGyro = $state({ gamma: 0, beta: 0, speed: 0, supported: false });
 
-	function beltPosToTransform(rawPos: number): string {
+	function beltPosToTransform(rawPos: number, w: number): string {
 		const p = ((rawPos % BELT_TOTAL) + BELT_TOTAL) % BELT_TOTAL;
 
 		let x: number, z: number, rotY: number;
 
 		if (p <= W) {
+			// Front: leading edge = left edge of span
 			x = W - p;
 			z = 0;
 			rotY = 0;
 		} else if (p <= W + CORNER_PERIM) {
+			// Left corner: interpolate x correction from 0 (front exit) → -w (back entry)
 			const t = (p - W) / CORNER_PERIM;
 			const angle = t * Math.PI;
-			x = -CORNER_R * Math.sin(angle);
+			x = -CORNER_R * Math.sin(angle) - w * t;
 			z = -CORNER_R * (1 - Math.cos(angle));
 			rotY = -t * 180;
 		} else if (p <= 2 * W + CORNER_PERIM) {
-			x = p - W - CORNER_PERIM;
+			// Back: leading edge = right edge of span, so translateX places left edge at ref - w
+			x = p - W - CORNER_PERIM - w;
 			z = -BACK_Z;
 			rotY = -180;
 		} else {
+			// Right corner: interpolate x correction from -w (back exit) → 0 (front entry)
 			const t = (p - 2 * W - CORNER_PERIM) / CORNER_PERIM;
 			const angle = t * Math.PI;
-			x = W + CORNER_R * Math.sin(angle);
+			x = W + CORNER_R * Math.sin(angle) - w * (1 - t);
 			z = -BACK_Z + CORNER_R * (1 - Math.cos(angle));
 			rotY = -180 - t * 180;
 		}
@@ -168,7 +172,7 @@
 			<span
 				class="char"
 				style="width: {widthOf(char)}px; height: {FONT_PX * 1.2}px; line-height: {FONT_PX *
-					1.2}px; transform: {beltPosToTransform(W - cumPos[i] + pixelOffset)};">{char}</span
+					1.2}px; transform: {beltPosToTransform(W - cumPos[i] + pixelOffset, widthOf(char))};">{char}</span
 			>
 		{/each}
 	</div>
