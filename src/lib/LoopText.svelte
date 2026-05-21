@@ -195,12 +195,6 @@
 		font-display: block;
 	}
 
-	.gyro-debug {
-		font-size: 12px;
-		opacity: 0.6;
-		margin-top: 8px;
-	}
-
 	.belt-outer {
 		display: inline-block;
 	}
