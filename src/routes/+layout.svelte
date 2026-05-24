@@ -27,4 +27,10 @@
 		font-family: Helvetica, sans-serif;
 		line-height: 200%;
 	}
+
+	@media (max-width: 600px) {
+		.container {
+			width: 100%;
+		}
+	}
 </style>
