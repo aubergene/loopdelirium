@@ -2,6 +2,8 @@
 	import { base } from '$app/paths';
 	import LoopText from '$lib/LoopText.svelte';
 	import TwistText from '$lib/TwistText.svelte';
+
+	let twist = $state(1.8);
 </script>
 
 <svelte:head>
@@ -16,8 +18,12 @@
 	Follow us on instagram <a href="https://www.instagram.com/loopdelirium">@loopdelirium</a>.
 </p>
 
-<TwistText twist={0.5} />
-<TwistText twist={5.5} />
+<label>
+	twist: {twist.toFixed(1)}
+	<input type="range" min="0" max="6" step="0.1" bind:value={twist} />
+</label>
+
+<TwistText {twist} />
 
 <h2>Shows</h2>
 

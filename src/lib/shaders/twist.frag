@@ -99,15 +99,18 @@ vec3 calcNormal(vec3 p) {
 // We stop when d < ε (hit) or t > maxDist (escaped the scene).
 float march(vec3 ro, vec3 rd) {
   float t = 0.05;
-  for (int i = 0; i < 120; i++) {
+  /* The twist warp has Lipschitz constant ≈ sqrt(1 + (k·R)²) where R ≈ 1.1
+   * (major radius). Dividing each step by this keeps sphere tracing safe
+   * at any twist value instead of using a fixed conservative multiplier. */
+  float stepScale = 1.0 / sqrt(1.0 + uTwist * uTwist * 1.21);
+  for (int i = 0; i < 300; i++) {
     float d = scene(ro + t * rd);
-    if (d < 0.0005) return t;   /* close enough to surface → hit          */
-    if (t > 20.0)   return -1.0; /* too far → miss                         */
-    t += d;                       /* sphere-trace step                      */
+    if (d < 0.0005) return t;
+    if (t > 20.0)   return -1.0;
+    t += d * stepScale;
   }
   return -1.0;
 }
-
 
 void main() {
   // ── Centered, aspect-corrected ray UV ─────────────────────────────────
@@ -125,9 +128,9 @@ void main() {
   //   x = r · sin(φ) · cos(θ)
   //   y = r · cos(φ)          ← Y is "up" in our world
   //   z = r · sin(φ) · sin(θ)
-  float theta = uMouse.x * 6.2832;        /* full 360° horizontal orbit   */
-  float phi   = mix(0.4, 1.35, uMouse.y); /* elevation: avoid gimbal lock  */
-  float camR  = 4.5;
+  float theta = uTime * 0.4;                              /* full orbit ~16 s  */
+  float phi   = mix(0.45, 1.05, 0.5 + 0.5 * sin(uTime * 0.13)); /* slow elevation bob */
+  float camR  = 6.0;
 
   vec3 ro = camR * vec3(
     sin(phi) * cos(theta),
