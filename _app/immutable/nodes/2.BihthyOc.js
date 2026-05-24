@@ -1,0 +1,1 @@
+import{a as e,f as s}from"../chunks/BahRdJKa.js";import{U as i,aQ as n}from"../chunks/BNmzJi-I.js";import{s as p}from"../chunks/Dt_Tx0SB.js";var m=s('<div class="container svelte-1qp717e"><!></div>');function f(a,r){var o=m(),t=i(o);p(t,()=>r.children),n(o),e(a,o)}export{f as component};
