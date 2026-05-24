@@ -1,9 +1,14 @@
-<script>
-	import { base } from '$app/paths';
-	import LoopText from '$lib/LoopText.svelte';
-	import TwistText from '$lib/TwistText.svelte';
+<script lang="ts">
+	import { base } from '$app/paths'
+	import LoopText from '$lib/LoopText.svelte'
+	import TwistText from '$lib/TwistText.svelte'
+	import TextOnCurve from '$lib/TextOnCurve.svelte'
+	import { sphereSpiral, sphereNormal } from '$lib/curves'
 
-	let twist = $state(1.8);
+	let { data } = $props()
+
+	const curve = sphereSpiral(8, 1)
+	let twist = $state(1.8)
 </script>
 
 <svelte:head>
@@ -24,6 +29,13 @@
 </label>
 
 <TwistText {twist} />
+
+<TextOnCurve
+	text="loop delirium "
+	font={data.font}
+	{curve}
+	normalFn={sphereNormal}
+/>
 
 <h2>Shows</h2>
 
