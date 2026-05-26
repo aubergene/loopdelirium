@@ -60,8 +60,8 @@ function normX(x: number): number {
 	return r(x * scale, PRECISION);
 }
 function normY(y: number): number {
-	// Fonts are y-up; our system is y-down with 0 at cap line
-	return r((capHeight - y) * scale, PRECISION);
+	// getPath returns canvas-space y: baseline=0, cap=-capHeight
+	return r((y + capHeight) * scale, PRECISION);
 }
 
 const glyphs: Record<string, GlyphEntry> = {};

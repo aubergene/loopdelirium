@@ -161,7 +161,7 @@
 					}
 				}
 				ctx.closePath(); // close final contour if no trailing Z
-				ctx.fill('evenodd');
+				ctx.fill(); // nonzero — correct for opposite-winding holes and degenerate loops
 			}
 			ctx.globalAlpha = 1;
 		}
