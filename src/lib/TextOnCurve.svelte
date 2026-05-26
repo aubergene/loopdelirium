@@ -2,8 +2,8 @@
 	import { onMount } from 'svelte';
 	import { frameAt } from './curves';
 	import type { Curve, NormalFn, SurfaceFrame } from './curves';
-	import { getGlyph, glyphTo3D } from './glyphs';
-	import type { Font, Glyph } from './glyphs';
+	import { glyphTo3D } from './glyphs';
+	import type { Font, GlyphEntry } from './glyphs';
 	import { applyView, applyViewZ } from './math3d';
 	import type { Vec3 } from './math3d';
 
@@ -35,23 +35,34 @@
 
 	let canvas: HTMLCanvasElement;
 
-	type Placement = { glyph: Glyph; baseT: number };
-	type WorkEntry = { glyph: Glyph; frame: SurfaceFrame; facingZ: number; depth: number };
+	type Placement = { glyph: GlyphEntry; baseT: number };
+	type WorkEntry = { glyph: GlyphEntry; frame: SurfaceFrame; facingZ: number; depth: number };
 
-	// Plain let — only read from the rAF closure, not the template.
 	let placements: Placement[] = [];
-	// Stable work array reused each frame to avoid per-frame allocation.
 	let work: WorkEntry[] = [];
 
 	$effect(() => {
-		const total = repeats * text.length;
-		const tPerChar = 1 / total;
-		placements = Array.from({ length: total }, (_, i) => ({
-			glyph: getGlyph(font, text[i % text.length]),
-			baseT: i * tPerChar,
-		}));
-		work = Array.from({ length: total }, () => ({
-			glyph: [],
+		// Space characters proportionally to their advance widths.
+		const totalAdvance = [...text].reduce(
+			(sum, c) => sum + (font.glyphs[c]?.advance ?? 1),
+			0
+		);
+		const tPerAdvanceUnit = 1 / (repeats * totalAdvance);
+
+		const result: Placement[] = [];
+		for (let j = 0; j < repeats; j++) {
+			let cumAdvance = 0;
+			for (const char of text) {
+				const glyph = font.glyphs[char] ?? font.glyphs[' '];
+				if (!glyph) { cumAdvance += 1; continue; }
+				result.push({ glyph, baseT: (j * totalAdvance + cumAdvance) * tPerAdvanceUnit });
+				cumAdvance += glyph.advance;
+			}
+		}
+
+		placements = result;
+		work = result.map(() => ({
+			glyph: font.glyphs[' '] ?? { advance: 1, cmds: [] },
 			frame: { P: [0,0,0], T: [0,0,0], N: [0,0,0], B: [0,0,0] },
 			facingZ: 0,
 			depth: 0,
@@ -81,10 +92,8 @@
 			const hh = canvas.height / 2;
 
 			ctx.clearRect(0, 0, canvas.width, canvas.height);
-			ctx.strokeStyle = color;
-			ctx.lineWidth = devicePixelRatio * 1.2;
+			ctx.fillStyle = color;
 
-			// Hoist trig: 4 calls total instead of 4 per vertex.
 			const cy = Math.cos(viewYaw + yawAngle), sy = Math.sin(viewYaw + yawAngle);
 			const cx = Math.cos(viewPitch),           sx = Math.sin(viewPitch);
 
@@ -94,7 +103,6 @@
 				return [(rp[0] / w) * focal + hw, (-rp[1] / w) * focal + hh];
 			};
 
-			// Populate stable work array in-place.
 			const n = placements.length;
 			for (let i = 0; i < n; i++) {
 				const { glyph, baseT } = placements[i];
@@ -116,17 +124,44 @@
 				if (alpha < 0.01) continue;
 				ctx.globalAlpha = alpha;
 
-				for (const polyline of glyph) {
-					if (polyline.length < 2) continue;
-					ctx.beginPath();
-					for (let j = 0; j < polyline.length; j++) {
-						const [u, v] = polyline[j];
-						const [sx2, sy2] = project(glyphTo3D(u, v, frame, charScale));
-						if (j === 0) ctx.moveTo(sx2, sy2);
-						else         ctx.lineTo(sx2, sy2);
+				// Draw all contours as one path, then fill with even-odd rule for holes.
+				ctx.beginPath();
+				let newContour = true;
+				for (const cmd of glyph.cmds) {
+					switch (cmd[0]) {
+						case 'M': {
+							if (!newContour) ctx.closePath();
+							newContour = false;
+							const [sx2, sy2] = project(glyphTo3D(cmd[1], cmd[2], frame, charScale));
+							ctx.moveTo(sx2, sy2);
+							break;
+						}
+						case 'L': {
+							const [sx2, sy2] = project(glyphTo3D(cmd[1], cmd[2], frame, charScale));
+							ctx.lineTo(sx2, sy2);
+							break;
+						}
+						case 'Q': {
+							const [cpx, cpy] = project(glyphTo3D(cmd[1], cmd[2], frame, charScale));
+							const [ex,  ey]  = project(glyphTo3D(cmd[3], cmd[4], frame, charScale));
+							ctx.quadraticCurveTo(cpx, cpy, ex, ey);
+							break;
+						}
+						case 'C': {
+							const [cp1x, cp1y] = project(glyphTo3D(cmd[1], cmd[2], frame, charScale));
+							const [cp2x, cp2y] = project(glyphTo3D(cmd[3], cmd[4], frame, charScale));
+							const [ex,   ey]   = project(glyphTo3D(cmd[5], cmd[6], frame, charScale));
+							ctx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, ex, ey);
+							break;
+						}
+						case 'Z':
+							ctx.closePath();
+							newContour = true;
+							break;
 					}
-					ctx.stroke();
 				}
+				ctx.closePath(); // close final contour if no trailing Z
+				ctx.fill('evenodd');
 			}
 			ctx.globalAlpha = 1;
 		}
