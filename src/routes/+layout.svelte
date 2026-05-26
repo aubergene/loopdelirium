@@ -2,15 +2,12 @@
 	let { children } = $props();
 </script>
 
-<div class="container">
-	{@render children()}
-</div>
+{@render children()}
 
 <style>
 	:global(html, body) {
-		background: #000;
-		color: #333;
 		margin: 0;
+		background: #000;
 	}
 
 	:global(a) {
@@ -19,18 +16,5 @@
 
 	:global(a:hover) {
 		color: #666;
-	}
-
-	.container {
-		width: 80%;
-		margin: auto;
-		font-family: Helvetica, sans-serif;
-		line-height: 200%;
-	}
-
-	@media (max-width: 600px) {
-		.container {
-			width: 100%;
-		}
 	}
 </style>

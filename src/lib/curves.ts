@@ -47,12 +47,13 @@ export const sphereNormal: NormalFn = (P) => normalize(P)
 // Varying the ratio between the two creates different twist / braid effects.
 export function torusSpiral(torusTurns: number, tubeTurns: number, R = 1.0, r = 0.38): Curve {
 	return (t: number): Vec3 => {
-		const theta = t * Math.PI * 2 * torusTurns
-		const phi   = t * Math.PI * 2 * tubeTurns
+		const theta  = t * Math.PI * 2 * torusTurns
+		const phi    = t * Math.PI * 2 * tubeTurns
+		const cosPhi = Math.cos(phi)
 		return [
-			(R + r * Math.cos(phi)) * Math.cos(theta),
+			(R + r * cosPhi) * Math.cos(theta),
 			r * Math.sin(phi),
-			(R + r * Math.cos(phi)) * Math.sin(theta)
+			(R + r * cosPhi) * Math.sin(theta)
 		]
 	}
 }
@@ -63,6 +64,7 @@ export function torusNormal(R: number): NormalFn {
 	return (P: Vec3): Vec3 => {
 		const xzLen = Math.sqrt(P[0] * P[0] + P[2] * P[2])
 		if (xzLen < 1e-10) return [0, 1, 0]
-		return normalize([P[0] - (P[0] / xzLen) * R, P[1], P[2] - (P[2] / xzLen) * R])
+		const invXzLen = R / xzLen
+		return normalize([P[0] - P[0] * invXzLen, P[1], P[2] - P[2] * invXzLen])
 	}
 }

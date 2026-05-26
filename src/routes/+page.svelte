@@ -1,50 +1,24 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import { base } from '$app/paths';
 	import TextOnCurve from '$lib/TextOnCurve.svelte';
 	import { torusSpiral, torusNormal } from '$lib/curves';
+	import { useDeviceOrientation } from '$lib/deviceOrientation.svelte';
 
 	let { data } = $props();
 
-	const curve = torusSpiral(4, 2, 1.0, 0.38);
+	const curve    = torusSpiral(4, 2, 1.0, 0.38);
 	const normalFn = torusNormal(1.0);
 
-	// Device-orientation controlled on mobile, fixed on desktop
-	let viewPitch = $state(0.3);
-	let rotationSpeed = $state(0.26);
-	let needsPermission = $state(false);
+	const orientation = useDeviceOrientation();
 
-	function handleOrientation(e: DeviceOrientationEvent) {
-		if (e.beta === null || e.gamma === null) return;
-		// beta ~90 = phone upright; map to pitch so upright = 0
-		viewPitch = Math.max(-1.5, Math.min(1.5, (e.beta - 90) * (1.5 / 90)));
-		// gamma: negative = tilt left, positive = tilt right
-		rotationSpeed = (e.gamma / 90) * 1.5;
-	}
-
-	async function grantPermission() {
-		const result = await (
-			DeviceOrientationEvent as DeviceOrientationEvent & {
-				requestPermission(): Promise<'granted' | 'denied'>;
-			}
-		).requestPermission();
-		if (result === 'granted') {
-			needsPermission = false;
-			window.addEventListener('deviceorientation', handleOrientation);
-		}
-	}
-
-	onMount(() => {
-		if (!window.DeviceOrientationEvent) return;
-
-		if (typeof (DeviceOrientationEvent as any).requestPermission === 'function') {
-			// iOS 13+ requires a user gesture to grant permission
-			needsPermission = true;
-		} else {
-			window.addEventListener('deviceorientation', handleOrientation);
-			return () => window.removeEventListener('deviceorientation', handleOrientation);
-		}
-	});
+	const viewPitch = $derived(
+		orientation.beta !== null
+			? Math.max(-1.5, Math.min(1.5, (orientation.beta - 90) * (1.5 / 90)))
+			: 0.3
+	);
+	const rotationSpeed = $derived(
+		orientation.gamma !== null ? (orientation.gamma / 90) * 1.5 : 0.26
+	);
 </script>
 
 <svelte:head>
@@ -66,8 +40,10 @@
 	/>
 </div>
 
-{#if needsPermission}
-	<button class="motion-prompt" onclick={grantPermission}> tap to enable motion </button>
+{#if orientation.needsPermission}
+	<button class="motion-prompt" onclick={orientation.grantPermission}>
+		tap to enable motion
+	</button>
 {/if}
 
 <div class="content">
@@ -91,6 +67,17 @@
 		font-family: monospace;
 	}
 
+	.canvas-wrap {
+		width: 100%;
+	}
+
+	@media (max-width: 600px) {
+		.canvas-wrap {
+			width: 95%;
+			margin: 0 auto;
+		}
+	}
+
 	.motion-prompt {
 		position: fixed;
 		bottom: 1.5rem;
@@ -104,17 +91,6 @@
 		font-size: 0.8rem;
 		cursor: pointer;
 		z-index: 10;
-	}
-
-	.canvas-wrap {
-		width: 100%;
-	}
-
-	@media (max-width: 600px) {
-		.canvas-wrap {
-			width: 95%;
-			margin: 0 auto;
-		}
 	}
 
 	.content {
@@ -135,9 +111,7 @@
 		opacity: 0.6;
 	}
 
-	a {
-		color: #c8e8ff;
-	}
+	a { color: #c8e8ff; }
 
 	ul {
 		margin: 0;

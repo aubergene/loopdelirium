@@ -46,7 +46,6 @@
 
 	let pixelOffset = $state(0); // continuous px position along belt
 	let rotateXDeg = $state(0);
-	let debugGyro = $state({ gamma: 0, beta: 0, speed: 0, supported: false });
 
 	function beltPosToTransform(rawPos: number, w: number): string {
 		const p = ((rawPos % BELT_TOTAL) + BELT_TOTAL) % BELT_TOTAL;
@@ -103,7 +102,6 @@
 				abs < GYRO_DEAD_ZONE
 					? 0
 					: Math.sign(gamma) * ((abs - GYRO_DEAD_ZONE) / (90 - GYRO_DEAD_ZONE)) * MAX_GYRO_SPEED;
-			debugGyro = { gamma, beta, speed: gyroSpeed, supported: true };
 		}
 
 		function tick(time: number) {
@@ -177,10 +175,6 @@
 		{/each}
 	</div>
 </div>
-
-<!-- <pre class="gyro-debug">gyro: {debugGyro.supported
-		? `γ=${debugGyro.gamma.toFixed(1)}° β=${debugGyro.beta.toFixed(1)}° spd=${debugGyro.speed.toFixed(0)}px/s`
-		: 'no data yet'} | px=${pixelOffset.toFixed(1)}</pre> -->
 
 <style>
 	@font-face {

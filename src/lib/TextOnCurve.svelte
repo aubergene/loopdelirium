@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { frameAt } from './curves';
-	import type { Curve, NormalFn } from './curves';
+	import type { Curve, NormalFn, SurfaceFrame } from './curves';
 	import { getGlyph, glyphTo3D } from './glyphs';
-	import type { Font } from './glyphs';
-	import { rotateY, rotateX } from './math3d';
+	import type { Font, Glyph } from './glyphs';
+	import { applyView, applyViewZ } from './math3d';
 	import type { Vec3 } from './math3d';
 
 	let {
@@ -35,22 +35,34 @@
 
 	let canvas: HTMLCanvasElement;
 
-	// Evenly distribute exactly (repeats * text.length) chars around t=[0,1].
-	let placements = $state<{ char: string; baseT: number }[]>([]);
+	type Placement = { glyph: Glyph; baseT: number };
+	type WorkEntry = { glyph: Glyph; frame: SurfaceFrame; facingZ: number; depth: number };
+
+	// Plain let — only read from the rAF closure, not the template.
+	let placements: Placement[] = [];
+	// Stable work array reused each frame to avoid per-frame allocation.
+	let work: WorkEntry[] = [];
+
 	$effect(() => {
 		const total = repeats * text.length;
 		const tPerChar = 1 / total;
-		const result: { char: string; baseT: number }[] = [];
-		for (let i = 0; i < total; i++)
-			result.push({ char: text[i % text.length], baseT: i * tPerChar });
-		placements = result;
+		placements = Array.from({ length: total }, (_, i) => ({
+			glyph: getGlyph(font, text[i % text.length]),
+			baseT: i * tPerChar,
+		}));
+		work = Array.from({ length: total }, () => ({
+			glyph: [],
+			frame: { P: [0,0,0], T: [0,0,0], N: [0,0,0], B: [0,0,0] },
+			facingZ: 0,
+			depth: 0,
+		}));
 	});
 
 	onMount(() => {
 		const ctx = canvas.getContext('2d')!;
 
 		const resize = () => {
-			canvas.width = Math.floor(canvas.clientWidth * devicePixelRatio);
+			canvas.width  = Math.floor(canvas.clientWidth  * devicePixelRatio);
 			canvas.height = Math.floor(canvas.clientHeight * devicePixelRatio);
 		};
 		const ro = new ResizeObserver(resize);
@@ -72,37 +84,46 @@
 			ctx.strokeStyle = color;
 			ctx.lineWidth = devicePixelRatio * 1.2;
 
-			const totalYaw = viewYaw + yawAngle;
+			// Hoist trig: 4 calls total instead of 4 per vertex.
+			const cy = Math.cos(viewYaw + yawAngle), sy = Math.sin(viewYaw + yawAngle);
+			const cx = Math.cos(viewPitch),           sx = Math.sin(viewPitch);
+
 			const project = (p: Vec3): [number, number] => {
-				const rp = rotateX(rotateY(p, totalYaw), viewPitch);
-				const w = camZ + rp[2];
+				const rp = applyView(p, cy, sy, cx, sx);
+				const w  = camZ + rp[2];
 				return [(rp[0] / w) * focal + hw, (-rp[1] / w) * focal + hh];
 			};
 
-			const entries = placements.map(({ char, baseT }) => {
-				const t = ((baseT + tOffset) % 1 + 1) % 1;
+			// Populate stable work array in-place.
+			const n = placements.length;
+			for (let i = 0; i < n; i++) {
+				const { glyph, baseT } = placements[i];
+				const t     = ((baseT + tOffset) % 1 + 1) % 1;
 				const frame = frameAt(curve, t, normalFn);
-				const rN = rotateX(rotateY(frame.N, totalYaw), viewPitch);
-				const rP = rotateX(rotateY(frame.P, totalYaw), viewPitch);
-				return { char, frame, rN, depth: rP[2] };
-			});
-			entries.sort((a, b) => a.depth - b.depth);
+				work[i].glyph   = glyph;
+				work[i].frame   = frame;
+				work[i].facingZ = applyViewZ(frame.N, cy, sy, cx, sx);
+				work[i].depth   = applyViewZ(frame.P, cy, sy, cx, sx);
+			}
+			work.length = n;
+			work.sort((a, b) => a.depth - b.depth);
 
-			for (const { char, frame, rN } of entries) {
-				const facing = rN[2];
-				const alpha =
-					facing < 0 ? Math.min(1, -facing * 1.5) : Math.min(0.35, facing * 0.5);
+			for (let i = 0; i < n; i++) {
+				const { glyph, frame, facingZ } = work[i];
+				const alpha = facingZ < 0
+					? Math.min(1, -facingZ * 1.5)
+					: Math.min(0.35, facingZ * 0.5);
 				if (alpha < 0.01) continue;
 				ctx.globalAlpha = alpha;
 
-				for (const polyline of getGlyph(font, char)) {
+				for (const polyline of glyph) {
 					if (polyline.length < 2) continue;
 					ctx.beginPath();
 					for (let j = 0; j < polyline.length; j++) {
 						const [u, v] = polyline[j];
-						const [sx, sy] = project(glyphTo3D(u, v, frame, charScale));
-						if (j === 0) ctx.moveTo(sx, sy);
-						else ctx.lineTo(sx, sy);
+						const [sx2, sy2] = project(glyphTo3D(u, v, frame, charScale));
+						if (j === 0) ctx.moveTo(sx2, sy2);
+						else         ctx.lineTo(sx2, sy2);
 					}
 					ctx.stroke();
 				}
@@ -114,7 +135,7 @@
 			animId = requestAnimationFrame(loop);
 			const dt = (now - last) / 1000;
 			last = now;
-			tOffset = (tOffset + scrollSpeed * dt) % 1;
+			tOffset  = (tOffset + scrollSpeed * dt) % 1;
 			yawAngle += rotationSpeed * dt;
 			draw();
 		}
