@@ -1,37 +1,61 @@
 <script lang="ts">
+	import { browser } from '$app/environment';
 	import { Pane, Slider, Folder, Separator, Button } from 'svelte-tweakpane-ui';
 	import TextOnCurve from '$lib/TextOnCurve.svelte';
 	import { torusSpiral, torusNormal } from '$lib/curves';
 
 	let { data } = $props();
 
+	const STORAGE_KEY = 'twist-v2';
+
+	function load() {
+		if (!browser) return null;
+		try { return JSON.parse(localStorage.getItem(STORAGE_KEY) ?? 'null'); }
+		catch { return null; }
+	}
+
+	const s = load();
+
 	// Torus shape
-	let torusTurns  = $state(4);
-	let tubeTurns   = $state(1);
-	let torusR      = $state(1.0);
-	let torusSmallR = $state(0.38);
+	let torusTurns  = $state(s?.torusTurns  ?? 4);
+	let tubeTurns   = $state(s?.tubeTurns   ?? 1);
+	let torusR      = $state(s?.torusR      ?? 1.0);
+	let torusSmallR = $state(s?.torusSmallR ?? 0.38);
 
 	// Text
-	let charScale = $state(0.12);
-	let repeats   = $state(2);
+	let repeats       = $state(s?.repeats       ?? 6);
+	let zoom          = $state(s?.zoom          ?? 1.0);
+	let letterSpacing = $state(s?.letterSpacing ?? -0.3);
 
 	// Animation
-	let scrollSpeed   = $state(0.05);
-	let rotationSpeed = $state(0);
+	let scrollSpeed   = $state(s?.scrollSpeed   ?? 0.05);
+	let rotationSpeed = $state(s?.rotationSpeed ?? 0);
 
-	// View
-	let viewYaw   = $state(0.4);
-	let viewPitch = $state(0.3);
+	// View — yaw kept as state but no slider; nudge buttons adjust it
+	let viewYaw   = $state(s?.viewYaw   ?? -0.48);
+	let viewPitch = $state(s?.viewPitch ?? 0.3);
 
 	const curve    = $derived(torusSpiral(torusTurns, tubeTurns, torusR, torusSmallR));
 	const normalFn = $derived(torusNormal(torusR));
 
-	function copySettings() {
+	// Persist whenever any setting changes
+	$effect(() => {
 		const settings = {
 			torusTurns, tubeTurns, torusR, torusSmallR,
-			charScale, repeats, scrollSpeed, rotationSpeed, viewYaw, viewPitch,
+			repeats, zoom, letterSpacing,
+			scrollSpeed, rotationSpeed,
+			viewYaw, viewPitch,
 		};
-		navigator.clipboard.writeText(JSON.stringify(settings, null, 2));
+		localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
+	});
+
+	function copySettings() {
+		navigator.clipboard.writeText(JSON.stringify({
+			torusTurns, tubeTurns, torusR, torusSmallR,
+			repeats, zoom, letterSpacing,
+			scrollSpeed, rotationSpeed,
+			viewYaw, viewPitch,
+		}, null, 2));
 	}
 </script>
 
@@ -42,8 +66,9 @@
 	font={data.font}
 	{curve}
 	{normalFn}
-	{charScale}
 	{repeats}
+	{zoom}
+	{letterSpacing}
 	{scrollSpeed}
 	{rotationSpeed}
 	{viewYaw}
@@ -58,19 +83,22 @@
 		<Slider bind:value={torusSmallR} min={0.1} max={0.6} step={0.01} label="tube r"         />
 	</Folder>
 	<Folder title="text">
-		<Slider bind:value={charScale} min={0.04} max={0.3} step={0.01} label="char size" />
-		<Slider bind:value={repeats}   min={1}    max={10}  step={1}    label="repeats"   />
+		<Slider bind:value={repeats}       min={1}    max={20}  step={1}    label="repeats (size)"  />
+		<Slider bind:value={zoom}          min={0.25} max={4}   step={0.05} label="zoom"            />
+		<Button title="fit (zoom = 1)"     onclick={() => (zoom = 1)}                               />
+		<Slider bind:value={letterSpacing} min={-1}   max={1}   step={0.01} label="letter spacing"  />
 	</Folder>
 	<Folder title="animation">
 		<Slider bind:value={scrollSpeed}   min={-0.3} max={0.3} step={0.001} label="scroll speed"   />
 		<Slider bind:value={rotationSpeed} min={-2}   max={2}   step={0.01}  label="rotation speed" />
 	</Folder>
 	<Folder title="view">
-		<Slider bind:value={viewYaw}   min={-3.14} max={3.14} step={0.01} label="yaw"   />
-		<Slider bind:value={viewPitch} min={-1.5}  max={1.5}  step={0.01} label="pitch" />
+		<Slider bind:value={viewPitch} min={-1.5}  max={1.5}  step={0.01} label="pitch"  />
+		<Button title="yaw ←"  onclick={() => (viewYaw -= 0.2)} />
+		<Button title="yaw →"  onclick={() => (viewYaw += 0.2)} />
 	</Folder>
 	<Separator />
-	<Button title="copy settings" on:click={copySettings} />
+	<Button title="copy settings" onclick={copySettings} />
 </Pane>
 
 <style>

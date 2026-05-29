@@ -26,6 +26,35 @@ export function frameAt(curve: Curve, t: number, normalFn: NormalFn): SurfaceFra
 	return { P, T, N, B }
 }
 
+// Precomputes arc-length values at `samples` evenly-spaced t values.
+// Returns [table, totalLength] where table[i] = arc length at t = i/samples.
+export function buildArcTable(curve: Curve, samples = 2000): [Float64Array, number] {
+	const table = new Float64Array(samples + 1)
+	let len = 0
+	let prev = curve(0)
+	for (let i = 1; i <= samples; i++) {
+		const p = curve(i / samples)
+		const dx = p[0] - prev[0], dy = p[1] - prev[1], dz = p[2] - prev[2]
+		len += Math.sqrt(dx * dx + dy * dy + dz * dz)
+		table[i] = len
+		prev = p
+	}
+	return [table, len]
+}
+
+// Converts an arc-length position s (wrapping modulo totalLength) to a t value.
+export function arcToT(table: Float64Array, s: number, totalLength: number): number {
+	const samples = table.length - 1
+	const target  = ((s % totalLength) + totalLength) % totalLength
+	let lo = 0, hi = samples
+	while (hi - lo > 1) {
+		const mid = (lo + hi) >> 1
+		if (table[mid] <= target) lo = mid; else hi = mid
+	}
+	const s0 = table[lo], s1 = table[hi]
+	return (lo + (target - s0) / (s1 - s0)) / samples
+}
+
 // Sphere spiral: winds `turns` times from south pole (t=0) to north pole (t=1).
 export function sphereSpiral(turns: number, radius = 1): Curve {
 	return (t: number): Vec3 => {

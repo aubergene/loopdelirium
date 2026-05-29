@@ -3,7 +3,7 @@ import { readFileSync } from 'fs';
 import { json } from '@sveltejs/kit';
 
 // Loaded once at startup — safe for static prerender and adapter-node.
-const fullFont = JSON.parse(readFileSync('static/fonts/google-sans-light.json', 'utf-8'));
+const fullFont = JSON.parse(readFileSync('static/fonts/inter-28pt-light.json', 'utf-8'));
 
 export const GET: RequestHandler = ({ url }) => {
 	const chars = url.searchParams.get('chars') ?? '';

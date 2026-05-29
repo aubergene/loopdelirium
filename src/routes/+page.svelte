@@ -6,7 +6,7 @@
 
 	let { data } = $props();
 
-	const curve    = torusSpiral(4, 2, 1.0, 0.38);
+	const curve = torusSpiral(4, 2, 1.0, 0.38);
 	const normalFn = torusNormal(1.0);
 
 	const orientation = useDeviceOrientation();
@@ -14,10 +14,10 @@
 	const viewPitch = $derived(
 		orientation.beta !== null
 			? Math.max(-1.5, Math.min(1.5, (orientation.beta - 90) * (1.5 / 90)))
-			: 0.3
+			: 0.3,
 	);
 	const rotationSpeed = $derived(
-		orientation.gamma !== null ? (orientation.gamma / 90) * 1.5 : 0.26
+		orientation.gamma !== null ? (orientation.gamma / 90) * 1.5 : 0.26,
 	);
 </script>
 
@@ -31,9 +31,9 @@
 		font={data.font}
 		{curve}
 		{normalFn}
-		charScale={0.2}
-		repeats={4}
+		repeats={6}
 		scrollSpeed={-0.013}
+		letterSpacing={-0.3}
 		{rotationSpeed}
 		viewYaw={-0.48}
 		{viewPitch}
@@ -111,7 +111,9 @@
 		opacity: 0.6;
 	}
 
-	a { color: #c8e8ff; }
+	a {
+		color: #c8e8ff;
+	}
 
 	ul {
 		margin: 0;
