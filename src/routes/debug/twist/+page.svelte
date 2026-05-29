@@ -93,7 +93,7 @@
 <svelte:head><title>debug: twist</title></svelte:head>
 
 <TextOnCurve
-	text="loop delirium  "
+	text="loop [delirium]   "
 	font={data.font}
 	{curve}
 	{normalFn}

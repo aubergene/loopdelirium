@@ -6,7 +6,7 @@ import { json } from '@sveltejs/kit';
 const fullFont = JSON.parse(readFileSync('static/fonts/inter-28pt-light.json', 'utf-8'));
 
 // Fixed set of glyphs needed by the main page.
-const MAIN_CHARS = new Set('loop delirium  ');
+const MAIN_CHARS = new Set('loop [delirium]  ');
 
 export const GET: RequestHandler = () => {
 	const glyphs: Record<string, unknown> = {};

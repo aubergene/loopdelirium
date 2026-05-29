@@ -27,7 +27,7 @@
 
 <div class="canvas-wrap">
 	<TextOnCurve
-		text="loop delirium  "
+		text="loop [delirium]  "
 		font={data.font}
 		{curve}
 		{normalFn}
