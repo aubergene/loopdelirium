@@ -116,7 +116,6 @@
 	<Folder title="text">
 		<Slider bind:value={repeats} min={1} max={20} step={1} label="repeats (size)" />
 		<Slider bind:value={zoom} min={0.25} max={4} step={0.05} label="zoom" />
-		<Button title="fit (zoom = 1)" onclick={() => (zoom = 1)} />
 		<Slider bind:value={letterSpacing} min={-1} max={1} step={0.01} label="letter spacing" />
 	</Folder>
 	<Folder title="animation">

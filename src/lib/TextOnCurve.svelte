@@ -49,17 +49,19 @@
 	let totalArcLength = 1;
 	// One arc-length unit per glyph advance unit — derived from repeats so text fills the loop.
 	let arcPerUnit = 0.1;
+	// camZ is the perspective camera distance; baseScale maps zoom=1 to the torus bounding radius.
+	const camZ = 3.0;
+	let baseScale = 1;
 
 	$effect(() => {
-		const [table, len] = buildArcTable(curve);
+		const [table, len, maxDist] = buildArcTable(curve);
 		arcTable = table;
 		totalArcLength = len;
+		// zoom=1 makes the torus just fit the canvas height (focal = height*0.85, hh = height/2)
+		baseScale = camZ / (maxDist * 1.7);
 
 		const chars = [...text];
-		const naturalTotal = chars.reduce(
-			(sum, c) => sum + (font.glyphs[c]?.advance ?? 1),
-			0
-		);
+		const naturalTotal = chars.reduce((sum, c) => sum + (font.glyphs[c]?.advance ?? 1), 0);
 		const stride = naturalTotal + chars.length * letterSpacing;
 		arcPerUnit = len / (repeats * stride);
 
@@ -68,28 +70,35 @@
 			let cumAdvance = 0;
 			for (const char of chars) {
 				const glyph = font.glyphs[char] ?? font.glyphs[' '];
-				if (!glyph) { cumAdvance += 1 + letterSpacing; continue; }
+				if (!glyph) {
+					cumAdvance += 1 + letterSpacing;
+					continue;
+				}
 				result.push({ glyph, baseS: (j * stride + cumAdvance) * arcPerUnit });
 				cumAdvance += glyph.advance + letterSpacing;
 			}
 		}
 
 		placements = result;
-		work = result.map(() => ({ glyph: font.glyphs[' '] ?? { advance: 1, cmds: [] }, s0: 0, facingZ: 0, depth: 0 }));
+		work = result.map(() => ({
+			glyph: font.glyphs[' '] ?? { advance: 1, cmds: [] },
+			s0: 0,
+			facingZ: 0,
+			depth: 0,
+		}));
 	});
 
 	onMount(() => {
 		const ctx = canvas.getContext('2d')!;
 
 		const resize = () => {
-			canvas.width  = Math.floor(canvas.clientWidth  * devicePixelRatio);
+			canvas.width = Math.floor(canvas.clientWidth * devicePixelRatio);
 			canvas.height = Math.floor(canvas.clientHeight * devicePixelRatio);
 		};
 		const ro = new ResizeObserver(resize);
 		ro.observe(canvas);
 		resize();
 
-		const camZ = 3.0;
 		let sOffset = 0;
 		let yawAngle = 0;
 		let last = performance.now();
@@ -103,44 +112,42 @@
 			ctx.clearRect(0, 0, canvas.width, canvas.height);
 			ctx.fillStyle = color;
 
-			const cy = Math.cos(viewYaw + yawAngle), sy = Math.sin(viewYaw + yawAngle);
-			const cx = Math.cos(viewPitch),           sx = Math.sin(viewPitch);
+			const cy = Math.cos(viewYaw + yawAngle),
+				sy = Math.sin(viewYaw + yawAngle);
+			const cx = Math.cos(viewPitch),
+				sx = Math.sin(viewPitch);
 
 			const project = (p: Vec3): [number, number] => {
 				const rp = applyView(p, cy, sy, cx, sx);
-				const w  = camZ + rp[2];
-				return [(rp[0] / w) * focal + hw, (-rp[1] / w) * focal + hh];
+				const w = camZ + rp[2];
+				const s = zoom * baseScale;
+				return [(rp[0] / w) * focal * s + hw, (-rp[1] / w) * focal * s + hh];
 			};
 
 			const len = totalArcLength;
 			const n = placements.length;
 			for (let i = 0; i < n; i++) {
 				const { glyph, baseS } = placements[i];
-				const s0 = ((baseS + sOffset) % len + len) % len;
+				const s0 = (((baseS + sOffset) % len) + len) % len;
 				// Use glyph centre for depth sort and facing
 				const midS = (s0 + (glyph.advance / 2) * arcPerUnit) % len;
 				const midFrame = frameAt(curve, arcToT(arcTable, midS, len), normalFn);
-				work[i].glyph   = glyph;
-				work[i].s0      = s0;
+				work[i].glyph = glyph;
+				work[i].s0 = s0;
 				work[i].facingZ = applyViewZ(midFrame.N, cy, sy, cx, sx);
-				work[i].depth   = applyViewZ(midFrame.P, cy, sy, cx, sx);
+				work[i].depth = applyViewZ(midFrame.P, cy, sy, cx, sx);
 			}
 			work.length = n;
 			work.sort((a, b) => a.depth - b.depth);
 
 			for (let i = 0; i < n; i++) {
 				const { glyph, s0, facingZ } = work[i];
-				const alpha = facingZ < 0
-					? Math.min(1, -facingZ * 1.5)
-					: Math.min(0.35, facingZ * 0.5);
+				const alpha = facingZ < 0 ? Math.min(1, -facingZ * 1.5) : Math.min(0.35, facingZ * 0.5);
 				if (alpha < 0.01) continue;
 				ctx.globalAlpha = alpha;
 
-				// Map each glyph vertex directly onto the torus surface.
-				// u moves along the curve (arc-length space), v lifts off radially via B.
-				// arcPerUnit is used for both — keeps rendering and placement in the same unit system.
-				// zoom scales rendering only, allowing size adjustment independent of repeats.
-				const renderUnit = arcPerUnit * zoom;
+				// zoom*baseScale is applied to the projection, not here — keeps text/torus ratio fixed.
+				const renderUnit = arcPerUnit;
 				const p3d = (u: number, v: number): Vec3 => {
 					const s = (s0 + u * renderUnit) % len;
 					const f = frameAt(curve, arcToT(arcTable, s, len), normalFn);
@@ -165,14 +172,14 @@
 						}
 						case 'Q': {
 							const [cpx, cpy] = project(p3d(cmd[1], cmd[2]));
-							const [ex,  ey]  = project(p3d(cmd[3], cmd[4]));
+							const [ex, ey] = project(p3d(cmd[3], cmd[4]));
 							ctx.quadraticCurveTo(cpx, cpy, ex, ey);
 							break;
 						}
 						case 'C': {
 							const [cp1x, cp1y] = project(p3d(cmd[1], cmd[2]));
 							const [cp2x, cp2y] = project(p3d(cmd[3], cmd[4]));
-							const [ex,   ey]   = project(p3d(cmd[5], cmd[6]));
+							const [ex, ey] = project(p3d(cmd[5], cmd[6]));
 							ctx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, ex, ey);
 							break;
 						}
@@ -192,7 +199,9 @@
 			animId = requestAnimationFrame(loop);
 			const dt = (now - last) / 1000;
 			last = now;
-			sOffset = ((sOffset + scrollSpeed * totalArcLength * dt) % totalArcLength + totalArcLength) % totalArcLength;
+			sOffset =
+				(((sOffset + scrollSpeed * totalArcLength * dt) % totalArcLength) + totalArcLength) %
+				totalArcLength;
 			yawAngle += rotationSpeed * dt;
 			draw();
 		}
