@@ -2,19 +2,23 @@
 // It registers event listeners via $effect and cleans up automatically.
 
 export function useDeviceOrientation() {
-	let beta  = $state<number | null>(null);
+	let alpha = $state<number | null>(null);
+	let beta = $state<number | null>(null);
 	let gamma = $state<number | null>(null);
 	let needsPermission = $state(false);
 
 	function handleOrientation(e: DeviceOrientationEvent) {
-		beta  = e.beta;
+		alpha = e.alpha;
+		beta = e.beta;
 		gamma = e.gamma;
 	}
 
 	async function grantPermission() {
-		const result = await (DeviceOrientationEvent as unknown as {
-			requestPermission(): Promise<'granted' | 'denied'>;
-		}).requestPermission();
+		const result = await (
+			DeviceOrientationEvent as unknown as {
+				requestPermission(): Promise<'granted' | 'denied'>;
+			}
+		).requestPermission();
 		if (result === 'granted') {
 			needsPermission = false;
 			window.addEventListener('deviceorientation', handleOrientation);
@@ -34,9 +38,18 @@ export function useDeviceOrientation() {
 	});
 
 	return {
-		get beta()             { return beta; },
-		get gamma()            { return gamma; },
-		get needsPermission()  { return needsPermission; },
+		get alpha() {
+			return alpha;
+		},
+		get beta() {
+			return beta;
+		},
+		get gamma() {
+			return gamma;
+		},
+		get needsPermission() {
+			return needsPermission;
+		},
 		grantPermission,
 	};
 }

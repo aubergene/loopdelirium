@@ -223,4 +223,10 @@
 		aspect-ratio: 16 / 9;
 		background: #0a0a14;
 	}
+
+	@media (max-width: 600px) {
+		canvas {
+			aspect-ratio: 1 / 1;
+		}
+	}
 </style>

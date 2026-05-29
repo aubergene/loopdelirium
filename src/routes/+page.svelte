@@ -16,6 +16,9 @@
 			? Math.max(-1.5, Math.min(1.5, (orientation.beta - 90) * (1.5 / 90)))
 			: -0.26,
 	);
+	const scrollSpeed = $derived(
+		orientation.alpha !== null ? -0.12 + (orientation.alpha / 360) * 0.2 : -0.02,
+	);
 	const rotationSpeed = $derived(
 		orientation.gamma !== null ? (orientation.gamma / 90) * 1.5 : 0.26,
 	);
@@ -32,8 +35,8 @@
 		{curve}
 		{normalFn}
 		repeats={7}
-		zoom={1.1}
-		scrollSpeed={-0.02}
+		zoom={1.0}
+		{scrollSpeed}
 		letterSpacing={-0.17}
 		{rotationSpeed}
 		viewYaw={-0.61}
@@ -70,13 +73,6 @@
 
 	.canvas-wrap {
 		width: 100%;
-	}
-
-	@media (max-width: 600px) {
-		.canvas-wrap {
-			width: 95%;
-			margin: 0 auto;
-		}
 	}
 
 	.motion-prompt {
