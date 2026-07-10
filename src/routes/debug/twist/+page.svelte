@@ -59,6 +59,14 @@
 		localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
 	});
 
+	function fullscreen() {
+		if (document.fullscreenElement) {
+			document.exitFullscreen();
+		} else {
+			document.documentElement.requestFullscreen();
+		}
+	}
+
 	function copySettings() {
 		const text = JSON.stringify(
 			{
@@ -128,6 +136,7 @@
 	</Folder>
 	<Separator />
 	<Button title="copy settings" on:click={copySettings} />
+	<Button title="fullscreen" on:click={fullscreen} />
 </Pane>
 
 <style>
