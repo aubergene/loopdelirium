@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { browser } from '$app/environment';
+	import { browser } from '$app/env';
 	import { Pane, Slider, Folder, Separator, Button } from 'svelte-tweakpane-ui';
-	import TextOnCurve from '$lib/TextOnCurve.svelte';
-	import { torusSpiral, torusNormal } from '$lib/curves';
+	import TextOnCurve from '#lib/TextOnCurve.svelte';
+	import { torusSpiral, torusNormal } from '#lib/curves.js';
 
 	let { data } = $props();
 

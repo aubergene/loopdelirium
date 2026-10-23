@@ -1,8 +1,9 @@
 <script>
 	const { data } = $props();
-	import { base } from '$app/paths';
+	import { asset } from '$app/paths';
 	import { parse } from 'marked';
 
+	/** @param {string} id */
 	function setHash(id) {
 		location.hash = id;
 	}
@@ -12,7 +13,7 @@
 	<title>NOT YET BUT SOON - loop[delirium]</title>
 </svelte:head>
 
-<img src="{base}/img/not-yet-but-soon.jpg" alt="NOT YET BUT SOON" />
+<img src="{asset('img/not-yet-but-soon.jpg')}" alt="NOT YET BUT SOON" />
 
 <h1>NOT YET BUT SOON</h1>
 
@@ -53,17 +54,23 @@
 			>Exhibition tour & artist talks</a
 		>
 	</li>
-	<li><b>Friday 22 November - 4pm</b> - Workshop: AI and the future of film</li>
+
 	<li>
-		<b>Saturday 30 November - 4pm</b> - Workshop: Anatomy of an installation: Concept, Code Design and
-		Fabrication
+		<b>Friday 22 November - 4pm</b>
+		- Workshop: AI and the future of film
 	</li>
 	<li>
-		<b>Thursday 5 December - 4:30pm - 8pm</b> HINTERLANDS: A mixed-reality dance work about the speculative
-		futures of human evolution
+		<b>Saturday 30 November - 4pm</b>
+		- Workshop: Anatomy of an installation: Concept, Code Design and Fabrication
 	</li>
 	<li>
-		<b>Friday 6th December - 5pm</b> Closing night event - performances with special guests to be announced
+		<b>Thursday 5 December - 4:30pm - 8pm</b>
+		HINTERLANDS: A mixed-reality dance work about the speculative futures of human evolution
+	</li>
+
+	<li>
+		<b>Friday 6th December - 5pm</b>
+		Closing night event - performances with special guests to be announced
 	</li>
 </ul>
 

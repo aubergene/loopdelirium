@@ -5,7 +5,7 @@
 	let {
 		vert,
 		frag,
-		uniforms = {}
+		uniforms = {},
 	}: {
 		vert: string;
 		frag: string;

@@ -17,10 +17,7 @@
 // The value types we support for extra uniforms.
 // The length of the array determines which gl.uniform*f overload is used.
 export type UniformValue =
-	| number
-	| [number, number]
-	| [number, number, number]
-	| [number, number, number, number];
+	number | [number, number] | [number, number, number] | [number, number, number, number];
 
 export interface Renderer {
 	setUniforms(uniforms: Record<string, UniformValue>): void;
@@ -35,19 +32,19 @@ function compile(gl: WebGLRenderingContext, type: number, src: string): WebGLSha
 	gl.shaderSource(s, src);
 	gl.compileShader(s);
 	if (!gl.getShaderParameter(s, gl.COMPILE_STATUS))
-		console.error(`[ShaderRenderer] ${type === gl.VERTEX_SHADER ? 'vert' : 'frag'} compile FAILED:`, gl.getShaderInfoLog(s));
+		console.error(
+			`[ShaderRenderer] ${type === gl.VERTEX_SHADER ? 'vert' : 'frag'} compile FAILED:`,
+			gl.getShaderInfoLog(s),
+		);
 	return s;
 }
 
-export function createRenderer(
-	canvas: HTMLCanvasElement,
-	vert: string,
-	frag: string
-): Renderer {
+export function createRenderer(canvas: HTMLCanvasElement, vert: string, frag: string): Renderer {
 	// ── Context ───────────────────────────────────────────────────────────
 	// 'webgl' = WebGL 1, the OpenGL ES 2.0 subset. Runs everywhere.
-	const gl = canvas.getContext('webgl');
-	if (!gl) throw new Error('WebGL not supported');
+	const ctx = canvas.getContext('webgl');
+	if (!ctx) throw new Error('WebGL not supported');
+	const gl = ctx;
 
 	// ── Compile and link ──────────────────────────────────────────────────
 	// A "program" pairs a vertex + fragment shader. The linker checks that
@@ -69,7 +66,7 @@ export function createRenderer(
 	gl.bufferData(
 		gl.ARRAY_BUFFER,
 		new Float32Array([-1, -1, 1, -1, 1, 1, -1, -1, 1, 1, -1, 1]),
-		gl.STATIC_DRAW
+		gl.STATIC_DRAW,
 	);
 	const aPos = gl.getAttribLocation(prog, 'aPosition');
 	gl.enableVertexAttribArray(aPos);
@@ -91,8 +88,7 @@ export function createRenderer(
 
 	function uploadExtras() {
 		for (const [name, value] of Object.entries(currentUniforms)) {
-			if (!extraLocs.has(name))
-				extraLocs.set(name, gl.getUniformLocation(prog, name));
+			if (!extraLocs.has(name)) extraLocs.set(name, gl.getUniformLocation(prog, name));
 			const loc = extraLocs.get(name)!;
 			if (typeof value === 'number') gl.uniform1f(loc, value);
 			else if (value.length === 2) gl.uniform2f(loc, value[0], value[1]);
@@ -112,7 +108,7 @@ export function createRenderer(
 		const r = canvas.getBoundingClientRect();
 		targetMouse = [
 			(e.clientX - r.left) / r.width,
-			1 - (e.clientY - r.top) / r.height // flip Y: WebGL Y=0 is bottom
+			1 - (e.clientY - r.top) / r.height, // flip Y: WebGL Y=0 is bottom
 		];
 	}
 	canvas.addEventListener('mousemove', onMouseMove);
@@ -170,6 +166,6 @@ export function createRenderer(
 			cancelAnimationFrame(animId);
 			canvas.removeEventListener('mousemove', onMouseMove);
 			ro.disconnect();
-		}
+		},
 	};
 }

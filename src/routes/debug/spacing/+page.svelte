@@ -1,6 +1,6 @@
 <script lang="ts">
-	import TextOnCurve from '$lib/TextOnCurve.svelte';
-	import { torusSpiral, torusNormal } from '$lib/curves';
+	import TextOnCurve from '#lib/TextOnCurve.svelte';
+	import { torusSpiral, torusNormal } from '#lib/curves.js';
 
 	let { data } = $props();
 
@@ -23,43 +23,85 @@
 		{
 			label: 'major=1 tube=0',
 			note: 'pure circle — should be perfectly uniform',
-			torusTurns: 1, tubeTurns: 0, R: 1, r: 0.38,
-			repeats: 3, letterSpacing: 0, viewYaw: -0.48, viewPitch: 0.3,
+			torusTurns: 1,
+			tubeTurns: 0,
+			R: 1,
+			r: 0.38,
+			repeats: 3,
+			letterSpacing: 0,
+			viewYaw: -0.48,
+			viewPitch: 0.3,
 		},
 		{
 			label: 'major=2 tube=0',
 			note: 'two loops of pure circle',
-			torusTurns: 2, tubeTurns: 0, R: 1, r: 0.38,
-			repeats: 5, letterSpacing: 0, viewYaw: -0.48, viewPitch: 0.3,
+			torusTurns: 2,
+			tubeTurns: 0,
+			R: 1,
+			r: 0.38,
+			repeats: 5,
+			letterSpacing: 0,
+			viewYaw: -0.48,
+			viewPitch: 0.3,
 		},
 		{
 			label: 'major=4 tube=0',
 			note: 'four loops of pure circle',
-			torusTurns: 4, tubeTurns: 0, R: 1, r: 0.38,
-			repeats: 10, letterSpacing: 0, viewYaw: -0.48, viewPitch: 0.3,
+			torusTurns: 4,
+			tubeTurns: 0,
+			R: 1,
+			r: 0.38,
+			repeats: 10,
+			letterSpacing: 0,
+			viewYaw: -0.48,
+			viewPitch: 0.3,
 		},
 		// Add tube winding — now the curve speed varies
 		{
 			label: 'major=1 tube=1',
 			note: 'simplest helix — introduces speed variation',
-			torusTurns: 1, tubeTurns: 1, R: 1, r: 0.38,
-			repeats: 3, letterSpacing: 0, viewYaw: -0.48, viewPitch: 0.3,
+			torusTurns: 1,
+			tubeTurns: 1,
+			R: 1,
+			r: 0.38,
+			repeats: 3,
+			letterSpacing: 0,
+			viewYaw: -0.48,
+			viewPitch: 0.3,
 		},
 		{
 			label: 'major=4 tube=1',
-			torusTurns: 4, tubeTurns: 1, R: 1, r: 0.38,
-			repeats: 10, letterSpacing: 0, viewYaw: -0.48, viewPitch: 0.3,
+			torusTurns: 4,
+			tubeTurns: 1,
+			R: 1,
+			r: 0.38,
+			repeats: 10,
+			letterSpacing: 0,
+			viewYaw: -0.48,
+			viewPitch: 0.3,
 		},
 		{
 			label: 'major=4 tube=2',
 			note: 'main page setting',
-			torusTurns: 4, tubeTurns: 2, R: 1, r: 0.38,
-			repeats: 10, letterSpacing: 0, viewYaw: -0.48, viewPitch: 0.3,
+			torusTurns: 4,
+			tubeTurns: 2,
+			R: 1,
+			r: 0.38,
+			repeats: 10,
+			letterSpacing: 0,
+			viewYaw: -0.48,
+			viewPitch: 0.3,
 		},
 		{
 			label: 'major=4 tube=4',
-			torusTurns: 4, tubeTurns: 4, R: 1, r: 0.38,
-			repeats: 10, letterSpacing: 0, viewYaw: -0.48, viewPitch: 0.3,
+			torusTurns: 4,
+			tubeTurns: 4,
+			R: 1,
+			r: 0.38,
+			repeats: 10,
+			letterSpacing: 0,
+			viewYaw: -0.48,
+			viewPitch: 0.3,
 		},
 	];
 </script>
@@ -112,13 +154,26 @@
 		margin: 0 auto;
 	}
 
-	h1 { margin: 0 0 0.5rem; font-size: 1.1rem; font-weight: normal; }
+	h1 {
+		margin: 0 0 0.5rem;
+		font-size: 1.1rem;
+		font-weight: normal;
+	}
 
-	.hint { margin: 0 0 1.5rem; color: #556; font-size: 0.8rem; }
+	.hint {
+		margin: 0 0 1.5rem;
+		color: #556;
+		font-size: 0.8rem;
+	}
 
-	code { color: #c8e8ff99; }
+	code {
+		color: #c8e8ff99;
+	}
 
-	.panel { margin-bottom: 2rem; border: 1px solid #1a1a2e; }
+	.panel {
+		margin-bottom: 2rem;
+		border: 1px solid #1a1a2e;
+	}
 
 	.label {
 		padding: 0.4rem 0.6rem;
@@ -128,7 +183,13 @@
 		line-height: 1.6;
 	}
 
-	.note { color: #889; }
+	.note {
+		color: #889;
+	}
 
-	.params { display: block; color: #445; font-size: 0.68rem; }
+	.params {
+		display: block;
+		color: #445;
+		font-size: 0.68rem;
+	}
 </style>

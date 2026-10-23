@@ -51,8 +51,7 @@ const font = opentype.parse(readFileSync(inputPath).buffer);
 const upm = font.unitsPerEm;
 
 // Use the font's capHeight if available, fall back to ascender
-const capHeight: number =
-	(font.tables as any).os2?.sCapHeight ?? font.ascender ?? upm * 0.7;
+const capHeight: number = (font.tables as any).os2?.sCapHeight ?? font.ascender ?? upm * 0.7;
 
 const scale = CHAR_H / capHeight;
 
@@ -94,9 +93,12 @@ for (const char of CHARS) {
 			case 'C':
 				cmds.push([
 					'C',
-					normX(cmd.x1), normY(cmd.y1),
-					normX(cmd.x2), normY(cmd.y2),
-					normX(cmd.x),  normY(cmd.y),
+					normX(cmd.x1),
+					normY(cmd.y1),
+					normX(cmd.x2),
+					normY(cmd.y2),
+					normX(cmd.x),
+					normY(cmd.y),
 				]);
 				break;
 			case 'Z':

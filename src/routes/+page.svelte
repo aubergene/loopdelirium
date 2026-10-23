@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { base } from '$app/paths';
-	import TextOnCurve from '$lib/TextOnCurve.svelte';
-	import { torusSpiral, torusNormal } from '$lib/curves';
-	import { useDeviceOrientation } from '$lib/deviceOrientation.svelte';
+	import { resolve } from '$app/paths';
+	import TextOnCurve from '#lib/TextOnCurve.svelte';
+	import { torusSpiral, torusNormal } from '#lib/curves.js';
+	import { useDeviceOrientation } from '#lib/deviceOrientation.svelte.js';
 
 	let { data } = $props();
 
@@ -16,6 +16,7 @@
 			? Math.max(-1.5, Math.min(1.5, (orientation.beta - 90) * (1.5 / 90)))
 			: -0.26,
 	);
+
 	const scrollSpeed = $derived(
 		orientation.alpha !== null ? -0.12 + (orientation.alpha / 360) * 0.2 : -0.02,
 	);
@@ -58,7 +59,8 @@
 	<h2>Shows</h2>
 	<ul>
 		<li>
-			<a href="{base}/not-yet-but-soon">not yet, but soon</a> - 14 Nov - 7 Dec - Sugar House Island
+			<a href={resolve('/(content)/not-yet-but-soon')}>not yet, but soon</a>
+			- 14 Nov - 7 Dec - Sugar House Island
 		</li>
 	</ul>
 </div>

@@ -170,7 +170,8 @@
 			<span
 				class="char"
 				style="width: {widthOf(char)}px; height: {FONT_PX * 1.2}px; line-height: {FONT_PX *
-					1.2}px; transform: {beltPosToTransform(W - cumPos[i] + pixelOffset, widthOf(char))};">{char}</span
+					1.2}px; transform: {beltPosToTransform(W - cumPos[i] + pixelOffset, widthOf(char))};"
+				>{char}</span
 			>
 		{/each}
 	</div>
