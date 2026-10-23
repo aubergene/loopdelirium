@@ -20,6 +20,7 @@
 		viewPitch = 0.3,
 		color = '#c8e8ff',
 		letterSpacing = 0,
+		smoothing = 0,
 	}: {
 		text: string;
 		font: Font;
@@ -33,6 +34,9 @@
 		viewPitch?: number;
 		color?: string;
 		letterSpacing?: number;
+		// Time constant (seconds) for easing scrollSpeed, rotationSpeed and viewPitch
+		// towards their prop values. 0 = apply changes instantly.
+		smoothing?: number;
 	} = $props();
 
 	let canvas: HTMLCanvasElement;
@@ -102,6 +106,9 @@
 		let sOffset = 0;
 		let yawAngle = 0;
 		let last = performance.now();
+		let curScroll = scrollSpeed;
+		let curRotation = rotationSpeed;
+		let curPitch = viewPitch;
 		let animId: number;
 
 		function draw() {
@@ -114,8 +121,8 @@
 
 			const cy = Math.cos(viewYaw + yawAngle),
 				sy = Math.sin(viewYaw + yawAngle);
-			const cx = Math.cos(viewPitch),
-				sx = Math.sin(viewPitch);
+			const cx = Math.cos(curPitch),
+				sx = Math.sin(curPitch);
 
 			const project = (p: Vec3): [number, number] => {
 				const rp = applyView(p, cy, sy, cx, sx);
@@ -197,12 +204,17 @@
 
 		function loop(now: number) {
 			animId = requestAnimationFrame(loop);
-			const dt = (now - last) / 1000;
+			// Cap dt so a backgrounded tab doesn't jump on return
+			const dt = Math.min((now - last) / 1000, 0.1);
 			last = now;
+			const k = smoothing > 0 ? 1 - Math.exp(-dt / smoothing) : 1;
+			curScroll += (scrollSpeed - curScroll) * k;
+			curRotation += (rotationSpeed - curRotation) * k;
+			curPitch += (viewPitch - curPitch) * k;
 			sOffset =
-				(((sOffset + scrollSpeed * totalArcLength * dt) % totalArcLength) + totalArcLength) %
+				(((sOffset + curScroll * totalArcLength * dt) % totalArcLength) + totalArcLength) %
 				totalArcLength;
-			yawAngle += rotationSpeed * dt;
+			yawAngle += curRotation * dt;
 			draw();
 		}
 

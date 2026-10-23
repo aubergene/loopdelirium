@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
+	import { prefersReducedMotion } from 'svelte/motion';
 	import TextOnCurve from '#lib/TextOnCurve.svelte';
 	import { torusSpiral, torusNormal } from '#lib/curves.js';
 	import { useDeviceOrientation } from '#lib/deviceOrientation.svelte.js';
@@ -9,19 +10,56 @@
 	const curve = torusSpiral(1, 3, 0.83, 0.4);
 	const normalFn = torusNormal(0.83);
 
-	const orientation = useDeviceOrientation();
+	const orientation = useDeviceOrientation(() => !prefersReducedMotion.current);
+
+	// Desktop: the mouse position (-1…1 across the viewport) stands in for tilt.
+	let mouse = $state<{ x: number; y: number } | null>(null);
+	$effect(() => {
+		if (prefersReducedMotion.current) return;
+		const onMove = (e: PointerEvent) => {
+			if (e.pointerType !== 'mouse') return;
+			mouse = { x: (e.clientX / innerWidth) * 2 - 1, y: (e.clientY / innerHeight) * 2 - 1 };
+		};
+		const onLeave = (e: MouseEvent) => {
+			if (!e.relatedTarget) mouse = null;
+		};
+		window.addEventListener('pointermove', onMove);
+		document.addEventListener('mouseout', onLeave);
+		return () => {
+			window.removeEventListener('pointermove', onMove);
+			document.removeEventListener('mouseout', onLeave);
+			mouse = null;
+		};
+	});
+
+	const DEFAULT_PITCH = -0.26;
+	const DEFAULT_SCROLL = -0.02;
+	const DEFAULT_ROTATION = 0.26;
 
 	const viewPitch = $derived(
-		orientation.beta !== null
-			? Math.max(-1.5, Math.min(1.5, (orientation.beta - 90) * (1.5 / 90)))
-			: -0.26,
+		orientation.pitch !== null
+			? Math.max(-1.5, Math.min(1.5, orientation.pitch * (1.5 / 90)))
+			: mouse
+				? DEFAULT_PITCH + mouse.y * 0.7
+				: DEFAULT_PITCH,
 	);
 
+	// cos() so the speed wraps smoothly through north instead of snapping at 0/360.
 	const scrollSpeed = $derived(
-		orientation.alpha !== null ? -0.12 + (orientation.alpha / 360) * 0.2 : -0.02,
+		prefersReducedMotion.current
+			? 0
+			: orientation.heading !== null
+				? DEFAULT_SCROLL - 0.1 * Math.cos(orientation.heading * (Math.PI / 180))
+				: DEFAULT_SCROLL,
 	);
 	const rotationSpeed = $derived(
-		orientation.gamma !== null ? (orientation.gamma / 90) * 1.5 : 0.26,
+		prefersReducedMotion.current
+			? 0
+			: orientation.roll !== null
+				? (orientation.roll / 90) * 1.5
+				: mouse
+					? DEFAULT_ROTATION + mouse.x * 1.0
+					: DEFAULT_ROTATION,
 	);
 </script>
 
@@ -42,6 +80,7 @@
 		{rotationSpeed}
 		viewYaw={-0.61}
 		{viewPitch}
+		smoothing={0.25}
 	/>
 </div>
 
