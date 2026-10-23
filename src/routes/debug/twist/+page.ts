@@ -1,10 +1,11 @@
 import type { PageLoad } from './$types';
+import { asset } from '$app/paths';
 
-// All printable ASCII — debug pages need every glyph
-const CHARS =
-	' !"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~';
+// Client-only: the controls and settings live in the browser.
+export const ssr = false;
 
+// The full font (all printable ASCII) so any text can be typed in.
 export const load: PageLoad = async ({ fetch }) => {
-	const font = await fetch(`/api/font?chars=${encodeURIComponent(CHARS)}`).then((r) => r.json());
+	const font = await fetch(asset('fonts/google-sans-light.json')).then((r) => r.json());
 	return { font };
 };

@@ -33,6 +33,22 @@
 
 <svelte:head>
 	<title>NOT YET BUT SOON - loop[delirium]</title>
+	<meta
+		name="description"
+		content="An exhibition curated and produced by loop[delirium] with Hypha Studios. 14 Nov – 6 Dec 2024, Hypha Gallery 2, Sugar House Island, London."
+	/>
+	<meta property="og:type" content="website" />
+	<meta property="og:site_name" content="loop[delirium]" />
+	<meta property="og:title" content="NOT YET BUT SOON" />
+	<meta
+		property="og:description"
+		content="An exhibition curated and produced by loop[delirium] with Hypha Studios. 14 Nov – 6 Dec 2024, Hypha Gallery 2, Sugar House Island, London."
+	/>
+	<meta property="og:url" content="https://www.loopdelirium.com/not-yet-but-soon" />
+	<meta property="og:image" content="https://www.loopdelirium.com/img/not-yet-but-soon.jpg" />
+	<meta property="og:image:width" content="502" />
+	<meta property="og:image:height" content="400" />
+	<meta name="twitter:card" content="summary_large_image" />
 </svelte:head>
 
 <section class="intro">

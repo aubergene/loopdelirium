@@ -86,6 +86,15 @@
 <svelte:head>
 	<title>loop[delirium]</title>
 	<meta name="description" content="loop[delirium] is an art collective." />
+	<meta property="og:type" content="website" />
+	<meta property="og:site_name" content="loop[delirium]" />
+	<meta property="og:title" content="loop[delirium]" />
+	<meta property="og:description" content="loop[delirium] is an art collective." />
+	<meta property="og:url" content="https://www.loopdelirium.com/" />
+	<meta property="og:image" content="https://www.loopdelirium.com/img/og-home.png" />
+	<meta property="og:image:width" content="1200" />
+	<meta property="og:image:height" content="630" />
+	<meta name="twitter:card" content="summary_large_image" />
 </svelte:head>
 
 <main class="stage" bind:clientWidth={stageW} bind:clientHeight={stageH}>

@@ -7,7 +7,7 @@
  *   advance: normalised advance width (varies per glyph)
  *
  * Usage:
- *   pnpm convert-font static/fonts/GoogleSansFlex_36pt-Light.ttf static/fonts/google-sans-light.json
+ *   pnpm convert-font scripts/fonts/GoogleSansFlex_36pt-Light.ttf static/fonts/google-sans-light.json
  */
 
 import opentype from 'opentype.js';

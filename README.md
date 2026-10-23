@@ -1,38 +1,53 @@
-# sv
+# loop[delirium]
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+Website for the loop[delirium] art collective — [www.loopdelirium.com](https://www.loopdelirium.com).
 
-## Creating a project
-
-If you're seeing this, you've probably already done this step. Congrats!
-
-```bash
-# create a new project in the current directory
-npx sv create
-
-# create a new project in my-app
-npx sv create my-app
-```
+Built with SvelteKit and prerendered to a static site hosted on GitHub Pages.
 
 ## Developing
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
 ```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
+pnpm install
+pnpm dev          # https://localhost:5173 (self-signed cert)
+pnpm dev --host   # also on your network, for testing on a phone
 ```
 
-## Building
-
-To create a production version of your app:
+Motion sensors on iOS only work over HTTPS, hence the self-signed certificate —
+accept the browser warning the first time.
 
 ```bash
-npm run build
+pnpm check   # type check
+pnpm lint    # Prettier check (pnpm format to fix)
+pnpm build   # static site into build/
 ```
 
-You can preview the production build with `npm run preview`.
+## Deploying
 
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+```bash
+pnpm release
+```
+
+Builds the site and pushes `build/` to the `gh-pages` branch, which GitHub Pages
+serves at the domain in `static/CNAME`. It doesn't push `main`, so `git push` too.
+
+## Pages
+
+- `/` — home, with the animated logo (tilt on phones, mouse on desktop)
+- `/not-yet-but-soon` — the 2024 exhibition; artworks come from
+  `src/lib/data/not-yet-but-soon-artworks.csv`
+- `/not-yet-but-soon/cards` — printable wall labels with QR codes linking to each artwork
+- `/screensaver` — full-screen, audio-reactive logo for exhibitions. Press **H** for
+  controls, **F** for fullscreen. The cursor hides when idle and the screen is kept awake.
+- `/debug/twist` — design tool for the logo's shape and motion. Settings are saved in
+  the browser and shared with `/screensaver`.
+
+## Fonts
+
+The logo is drawn from glyph outlines in `static/fonts/google-sans-light.json`,
+generated from the source font with:
+
+```bash
+pnpm convert-font scripts/fonts/GoogleSansFlex_36pt-Light.ttf static/fonts/google-sans-light.json
+```
+
+Page text uses `static/fonts/google-sans-flex-light.woff2`, a Latin subset of the same font.

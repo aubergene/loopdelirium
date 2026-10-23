@@ -1,149 +1,75 @@
 <script lang="ts">
-	import { browser } from '$app/env';
-	import { Pane, Slider, Folder, Separator, Button } from 'svelte-tweakpane-ui';
+	import { Pane, Separator, Button } from 'svelte-tweakpane-ui';
 	import TextOnCurve from '#lib/TextOnCurve.svelte';
+	import TwistControls from '#lib/TwistControls.svelte';
 	import { torusSpiral, torusNormal } from '#lib/curves.js';
+	import {
+		DEFAULT_SETTINGS,
+		loadSettings,
+		saveSettings,
+		copySettings,
+		toggleFullscreen,
+	} from '#lib/twistSettings.js';
 
 	let { data } = $props();
 
-	const STORAGE_KEY = 'twist-v2';
+	let settings = $state(loadSettings());
+	let showPane = $state(true);
 
-	function load() {
-		if (!browser) return null;
-		try {
-			return JSON.parse(localStorage.getItem(STORAGE_KEY) ?? 'null');
-		} catch {
-			return null;
-		}
-	}
+	const curve = $derived(
+		torusSpiral(settings.torusTurns, settings.tubeTurns, settings.torusR, settings.torusSmallR),
+	);
+	const normalFn = $derived(torusNormal(settings.torusR));
 
-	const s = load();
+	$effect(() => saveSettings($state.snapshot(settings)));
 
-	// Torus shape
-	let torusTurns = $state(Math.round(s?.torusTurns ?? 4));
-	let tubeTurns = $state(Math.round(s?.tubeTurns ?? 1));
-	let torusR = $state(s?.torusR ?? 1.0);
-	let torusSmallR = $state(s?.torusSmallR ?? 0.38);
-
-	// Text
-	let repeats = $state(s?.repeats ?? 6);
-	let zoom = $state(s?.zoom ?? 1.0);
-	let letterSpacing = $state(s?.letterSpacing ?? -0.3);
-
-	// Animation
-	let scrollSpeed = $state(s?.scrollSpeed ?? 0.05);
-	let rotationSpeed = $state(s?.rotationSpeed ?? 0);
-
-	// View — yaw kept as state but no slider; nudge buttons adjust it
-	let viewYaw = $state(s?.viewYaw ?? -0.48);
-	let viewPitch = $state(s?.viewPitch ?? 0.3);
-
-	const curve = $derived(torusSpiral(torusTurns, tubeTurns, torusR, torusSmallR));
-	const normalFn = $derived(torusNormal(torusR));
-
-	// Persist whenever any setting changes
-	$effect(() => {
-		const settings = {
-			torusTurns,
-			tubeTurns,
-			torusR,
-			torusSmallR,
-			repeats,
-			zoom,
-			letterSpacing,
-			scrollSpeed,
-			rotationSpeed,
-			viewYaw,
-			viewPitch,
-		};
-		localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
-	});
-
-	function fullscreen() {
-		if (document.fullscreenElement) {
-			document.exitFullscreen();
-		} else {
-			document.documentElement.requestFullscreen();
-		}
-	}
-
-	function copySettings() {
-		const text = JSON.stringify(
-			{
-				torusTurns,
-				tubeTurns,
-				torusR,
-				torusSmallR,
-				repeats,
-				zoom,
-				letterSpacing,
-				scrollSpeed,
-				rotationSpeed,
-				viewYaw,
-				viewPitch,
-			},
-			null,
-			2,
-		);
-		const ta = Object.assign(document.createElement('textarea'), {
-			value: text,
-			style: 'position:fixed;left:-9999px;top:0',
-		});
-		document.body.appendChild(ta);
-		ta.focus();
-		ta.select();
-		const ok = document.execCommand('copy');
-		ta.remove();
-		if (!ok) navigator.clipboard?.writeText(text);
+	function onKey(e: KeyboardEvent) {
+		if (e.target instanceof HTMLInputElement) return;
+		if (e.key === 'h') showPane = !showPane;
+		if (e.key === 'f') toggleFullscreen();
 	}
 </script>
 
 <svelte:head><title>debug: twist</title></svelte:head>
+<svelte:window onkeydown={onKey} />
 
-<TextOnCurve
-	text="loop [delirium]   "
-	font={data.font}
-	{curve}
-	{normalFn}
-	{repeats}
-	{zoom}
-	{letterSpacing}
-	{scrollSpeed}
-	{rotationSpeed}
-	{viewYaw}
-	{viewPitch}
-/>
+<div class="stage">
+	<TextOnCurve
+		text={settings.text}
+		font={data.font}
+		{curve}
+		{normalFn}
+		repeats={settings.repeats}
+		zoom={settings.zoom}
+		letterSpacing={settings.letterSpacing}
+		scrollSpeed={settings.scrollSpeed}
+		rotationSpeed={settings.rotationSpeed}
+		smoothing={settings.smoothing}
+		viewYaw={settings.viewYaw}
+		viewPitch={settings.viewPitch}
+		color={settings.color}
+	/>
+</div>
 
-<Pane title="twist" position="fixed">
-	<Folder title="torus">
-		<Slider bind:value={torusTurns} min={1} max={12} step={1} label="turns (major)" />
-		<Slider bind:value={tubeTurns} min={0} max={6} step={1} label="turns (tube)" />
-		<Slider bind:value={torusR} min={0.5} max={2} step={0.01} label="major R" />
-		<Slider bind:value={torusSmallR} min={0.1} max={0.6} step={0.01} label="tube r" />
-	</Folder>
-	<Folder title="text">
-		<Slider bind:value={repeats} min={1} max={20} step={1} label="repeats (size)" />
-		<Slider bind:value={zoom} min={0.25} max={4} step={0.05} label="zoom" />
-		<Slider bind:value={letterSpacing} min={-1} max={1} step={0.01} label="letter spacing" />
-	</Folder>
-	<Folder title="animation">
-		<Slider bind:value={scrollSpeed} min={-0.3} max={0.3} step={0.001} label="scroll speed" />
-		<Slider bind:value={rotationSpeed} min={-2} max={2} step={0.01} label="rotation speed" />
-	</Folder>
-	<Folder title="view">
-		<Slider bind:value={viewPitch} min={-1.5} max={1.5} step={0.01} label="pitch" />
-		<Slider bind:value={viewYaw} min={-3.14} max={3.14} step={0.01} label="yaw" />
-	</Folder>
-	<Separator />
-	<Button title="copy settings" on:click={copySettings} />
-	<Button title="fullscreen" on:click={fullscreen} />
-</Pane>
+{#if showPane}
+	<Pane title="twist · H to hide" position="fixed">
+		<TwistControls bind:settings />
+		<Separator />
+		<Button title="copy settings" on:click={() => copySettings($state.snapshot(settings))} />
+		<Button title="reset to home page look" on:click={() => (settings = { ...DEFAULT_SETTINGS })} />
+		<Button title="fullscreen (F)" on:click={toggleFullscreen} />
+	</Pane>
+{/if}
 
 <style>
-	:global(body) {
-		margin: 0;
-		background: #0a0a14;
-		color: #c8e8ff;
-		font-family: monospace;
+	.stage {
+		position: fixed;
+		inset: 0;
+	}
+
+	.stage :global(canvas) {
+		width: 100%;
+		height: 100%;
+		aspect-ratio: auto;
 	}
 </style>
