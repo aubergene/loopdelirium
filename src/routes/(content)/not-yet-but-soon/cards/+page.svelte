@@ -1,6 +1,5 @@
 <script>
 	import QrCode from 'svelte-qrcode';
-	import { parse } from 'marked';
 
 	const { data } = $props();
 

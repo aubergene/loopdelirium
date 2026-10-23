@@ -13,7 +13,7 @@
 	<title>NOT YET BUT SOON - loop[delirium]</title>
 </svelte:head>
 
-<img src="{asset('img/not-yet-but-soon.jpg')}" alt="NOT YET BUT SOON" />
+<img src={asset('img/not-yet-but-soon.jpg')} alt="NOT YET BUT SOON" />
 
 <h1>NOT YET BUT SOON</h1>
 
