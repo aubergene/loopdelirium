@@ -119,7 +119,7 @@
 		<h2 id="shows" class="label">Shows</h2>
 		<a class="show" href={resolve('/(content)/not-yet-but-soon')}>
 			<span class="show-title">not yet, but soon</span>
-			<span class="muted">14 Nov – 7 Dec 2024</span>
+			<span class="muted">14 Nov – 6 Dec 2024</span>
 			<span class="muted">Sugar House Island</span>
 		</a>
 	</section>
