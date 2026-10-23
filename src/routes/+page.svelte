@@ -61,100 +61,222 @@
 					? DEFAULT_ROTATION + mouse.x * 1.0
 					: DEFAULT_ROTATION,
 	);
+
+	// zoom=1 fits the logo to the canvas height, and it's ~1.45× wider than tall,
+	// so on narrower screens scale down to keep it inside the width.
+	let stageW = $state(0);
+	let stageH = $state(0);
+	const zoom = $derived(stageH ? Math.min(0.92, (stageW / stageH) * 0.62) : 0.92);
+
+	let hasMouse = $state(false);
+	$effect(() => {
+		hasMouse = matchMedia('(hover: hover) and (pointer: fine)').matches;
+	});
+	const hint = $derived(
+		prefersReducedMotion.current
+			? null
+			: orientation.pitch !== null
+				? 'tilt to steer'
+				: hasMouse
+					? 'move to steer'
+					: null,
+	);
 </script>
 
 <svelte:head>
 	<title>loop[delirium]</title>
+	<meta name="description" content="loop[delirium] is an art collective." />
 </svelte:head>
 
-<div class="canvas-wrap">
-	<TextOnCurve
-		text="loop [delirium]  "
-		font={data.font}
-		{curve}
-		{normalFn}
-		repeats={7}
-		zoom={1.0}
-		{scrollSpeed}
-		letterSpacing={-0.17}
-		{rotationSpeed}
-		viewYaw={-0.61}
-		{viewPitch}
-		smoothing={0.25}
-	/>
-</div>
+<main class="stage" bind:clientWidth={stageW} bind:clientHeight={stageH}>
+	<div class="logo" aria-hidden="true">
+		<TextOnCurve
+			text="loop [delirium]  "
+			font={data.font}
+			{curve}
+			{normalFn}
+			repeats={7}
+			{zoom}
+			{scrollSpeed}
+			letterSpacing={-0.17}
+			{rotationSpeed}
+			viewYaw={-0.61}
+			{viewPitch}
+			smoothing={0.25}
+		/>
+	</div>
 
-{#if orientation.needsPermission}
-	<button class="motion-prompt" onclick={orientation.grantPermission}>
-		tap to enable motion
-	</button>
-{/if}
+	<header class="corner top-left">
+		<h1>loop[delirium]</h1>
+		<p class="muted">art collective</p>
+	</header>
 
-<div class="content">
-	<h1>loop[delirium]</h1>
-	<p>
-		Follow us on instagram <a href="https://www.instagram.com/loopdelirium">@loopdelirium</a>.
-	</p>
-	<h2>Shows</h2>
-	<ul>
-		<li>
-			<a href={resolve('/(content)/not-yet-but-soon')}>not yet, but soon</a>
-			- 14 Nov - 7 Dec - Sugar House Island
-		</li>
-	</ul>
-</div>
+	<nav class="corner top-right" aria-label="Elsewhere">
+		<a href="https://www.instagram.com/loopdelirium">Instagram <span aria-hidden="true">↗</span></a>
+	</nav>
+
+	<section class="corner bottom-left" aria-labelledby="shows">
+		<h2 id="shows" class="label">Shows</h2>
+		<a class="show" href={resolve('/(content)/not-yet-but-soon')}>
+			<span class="show-title">not yet, but soon</span>
+			<span class="muted">14 Nov – 7 Dec 2024</span>
+			<span class="muted">Sugar House Island</span>
+		</a>
+	</section>
+
+	<div class="corner bottom-right">
+		{#if orientation.needsPermission}
+			<button class="label hint" onclick={orientation.grantPermission}>tap to enable motion</button>
+		{:else if hint}
+			<p class="label hint">{hint}</p>
+		{/if}
+	</div>
+</main>
 
 <style>
-	:global(body) {
-		margin: 0;
-		background: #0a0a14;
-		color: #c8e8ff;
-		font-family: monospace;
+	.stage {
+		position: relative;
+		height: 100vh;
+		height: 100svh;
+		overflow: hidden;
+		background: radial-gradient(ellipse 60% 55% at 50% 50%, #141832 0%, #0a0a14 70%);
 	}
 
-	.canvas-wrap {
+	.logo {
+		position: absolute;
+		inset: 0;
+	}
+
+	.logo :global(canvas) {
 		width: 100%;
+		height: 100%;
+		aspect-ratio: auto;
+		background: transparent;
 	}
 
-	.motion-prompt {
-		position: fixed;
-		bottom: 1.5rem;
-		left: 50%;
-		transform: translateX(-50%);
-		background: #1a1a2e;
-		color: #c8e8ff;
-		border: 1px solid #c8e8ff44;
-		padding: 0.5rem 1.2rem;
-		font-family: monospace;
-		font-size: 0.8rem;
-		cursor: pointer;
-		z-index: 10;
+	.corner {
+		position: absolute;
+		max-width: min(22rem, 45vw);
+		font-size: 0.9375rem;
+		line-height: 1.45;
+		animation: fade-in 1.2s 0.3s ease-out both;
 	}
 
-	.content {
-		padding: 1.5rem 2rem;
+	.top-left {
+		top: var(--gutter);
+		left: var(--gutter);
+	}
+
+	.top-right {
+		top: var(--gutter);
+		right: var(--gutter);
+		text-align: right;
+	}
+
+	.bottom-left {
+		bottom: var(--gutter);
+		left: var(--gutter);
+	}
+
+	.bottom-right {
+		bottom: var(--gutter);
+		right: var(--gutter);
+		text-align: right;
+	}
+
+	h1,
+	h2,
+	p {
+		margin: 0;
+		font: inherit;
 	}
 
 	h1 {
-		margin: 0 0 0.5rem;
-		font-size: 1.5rem;
-		font-weight: normal;
-		letter-spacing: 0.05em;
+		letter-spacing: 0.01em;
 	}
 
-	h2 {
-		margin: 1.5rem 0 0.5rem;
-		font-size: 1rem;
-		font-weight: normal;
-		opacity: 0.6;
+	.muted {
+		color: var(--muted);
+	}
+
+	.label {
+		margin-bottom: 0.4rem;
+		color: var(--muted);
+		font-size: 0.6875rem;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
 	}
 
 	a {
-		color: #c8e8ff;
+		color: var(--fg);
+		text-decoration: none;
 	}
 
-	ul {
+	.show {
+		display: flex;
+		flex-direction: column;
+	}
+
+	.show-title,
+	.top-right a {
+		text-decoration: underline;
+		text-decoration-color: rgb(200 232 255 / 0.3);
+		text-decoration-thickness: 1px;
+		text-underline-offset: 0.25em;
+		transition: text-decoration-color 0.2s;
+	}
+
+	a:hover .show-title,
+	.top-right a:hover,
+	a:focus-visible .show-title,
+	.top-right a:focus-visible {
+		text-decoration-color: var(--fg);
+	}
+
+	a:focus-visible,
+	button:focus-visible {
+		outline: 1px solid var(--fg);
+		outline-offset: 4px;
+	}
+
+	.hint {
 		margin: 0;
-		padding-left: 1.2rem;
+	}
+
+	button.hint {
+		padding: 0.5rem 0.8rem;
+		border: 1px solid rgb(200 232 255 / 0.3);
+		border-radius: 999px;
+		background: rgb(10 10 20 / 0.6);
+		color: var(--fg);
+		font-family: inherit;
+		cursor: pointer;
+	}
+
+	@media (max-width: 600px) {
+		.corner {
+			font-size: 0.875rem;
+		}
+
+		.bottom-left {
+			max-width: 60vw;
+		}
+
+		.bottom-right {
+			max-width: 35vw;
+		}
+	}
+
+	@keyframes fade-in {
+		from {
+			opacity: 0;
+			transform: translateY(4px);
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.corner {
+			animation: none;
+		}
 	}
 </style>

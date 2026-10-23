@@ -10,32 +10,43 @@
 	<title>cards</title>
 </svelte:head>
 
-<h2>Artworks</h2>
+<div class="sheet">
+	<h2>Artworks</h2>
 
-{#each data.rows as row}
-	<div class="card">
-		<div class="id">
-			{row.id}
+	{#each data.rows as row}
+		<div class="card">
+			<div class="id">
+				{row.id}
+			</div>
+			<div class="artwork">
+				<div class="title">
+					<b>{row.title}</b> ({row.date})
+				</div>
+				<div class="artist">
+					{row.artist}
+				</div>
+				<p class="details">
+					{row.medium}<br />
+					{row.dimensions}
+				</p>
+				<div class="qr">
+					<QrCode value="{url}#{row.id}" size={60} />
+				</div>
+			</div>
 		</div>
-		<div class="artwork">
-			<div class="title">
-				<b>{row.title}</b> ({row.date})
-			</div>
-			<div class="artist">
-				{row.artist}
-			</div>
-			<p class="details">
-				{row.medium}<br />
-				{row.dimensions}
-			</p>
-			<div class="qr">
-				<QrCode value="{url}#{row.id}" size={60} />
-			</div>
-		</div>
-	</div>
-{/each}
+	{/each}
+</div>
 
 <style>
+	/* Printed wall labels: keep them black on white regardless of the site theme. */
+	.sheet {
+		padding: 1em;
+		background: #fff;
+		color: #000;
+		font-family: Helvetica, sans-serif;
+		font-weight: normal;
+	}
+
 	@media print {
 		.card {
 			break-inside: avoid;
