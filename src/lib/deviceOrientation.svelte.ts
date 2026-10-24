@@ -10,10 +10,9 @@
 //             positive = top tilted away. Equals beta - 90 when there's no roll.
 //   roll    — left/right tilt, -90…90. Equals gamma when flat; when upright it's
 //             the "steering wheel" tilt.
-//   heading — compass heading 0…360, measured along a device axis halfway
-//             between the top edge and the back of the phone. Equals alpha when
-//             flat or upright; it's only undefined when that axis points
-//             straight up or down, a pose nobody holds a phone in.
+//
+// Both come from the direction of gravity alone, so turning on the spot
+// (compass heading / alpha) doesn't affect them.
 
 const DEG = Math.PI / 180;
 
@@ -26,32 +25,24 @@ const requestPermission = () => gated().requestPermission!();
 export function useDeviceOrientation(enabled: () => boolean = () => true) {
 	let pitch = $state<number | null>(null);
 	let roll = $state<number | null>(null);
-	let heading = $state<number | null>(null);
 	let needsPermission = $state(false);
 	let permission = $state<'unknown' | 'granted' | 'denied'>('unknown');
 	let requesting = false;
 
 	function handleOrientation(e: DeviceOrientationEvent) {
-		if (e.alpha === null || e.beta === null || e.gamma === null) return;
-		const sa = Math.sin(e.alpha * DEG),
-			ca = Math.cos(e.alpha * DEG);
+		if (e.beta === null || e.gamma === null) return;
 		const sb = Math.sin(e.beta * DEG),
 			cb = Math.cos(e.beta * DEG);
 		const sg = Math.sin(e.gamma * DEG),
 			cg = Math.cos(e.gamma * DEG);
 
-		// World "up" in device coordinates: R(alpha,beta,gamma)ᵀ · [0, 0, 1]
+		// World "up" in device coordinates: R(alpha,beta,gamma)ᵀ · [0, 0, 1].
+		// alpha cancels out.
 		const ux = -cb * sg;
 		const uy = sb;
 		const uz = cb * cg;
 		pitch = -Math.atan2(uz, uy) / DEG;
 		roll = Math.asin(Math.max(-1, Math.min(1, -ux))) / DEG;
-
-		// Device vector (0, 1, -1) rotated into world space: R · v
-		const t = cb + cg * sb;
-		const wx = -sg * ca - t * sa;
-		const wy = -sg * sa + t * ca;
-		heading = (((Math.atan2(-wx, wy) / DEG) % 360) + 360) % 360;
 	}
 
 	async function grantPermission() {
@@ -91,7 +82,7 @@ export function useDeviceOrientation(enabled: () => boolean = () => true) {
 		window.addEventListener('deviceorientation', handleOrientation);
 		return () => {
 			window.removeEventListener('deviceorientation', handleOrientation);
-			pitch = roll = heading = null;
+			pitch = roll = null;
 		};
 	});
 
@@ -101,9 +92,6 @@ export function useDeviceOrientation(enabled: () => boolean = () => true) {
 		},
 		get roll() {
 			return roll;
-		},
-		get heading() {
-			return heading;
 		},
 		get needsPermission() {
 			return needsPermission;

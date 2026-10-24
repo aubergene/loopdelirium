@@ -44,14 +44,9 @@
 				: DEFAULT_PITCH,
 	);
 
-	// cos() so the speed wraps smoothly through north instead of snapping at 0/360.
-	const scrollSpeed = $derived(
-		prefersReducedMotion.current
-			? 0
-			: orientation.heading !== null
-				? DEFAULT_SCROLL - 0.1 * Math.cos(orientation.heading * (Math.PI / 180))
-				: DEFAULT_SCROLL,
-	);
+	// Compass heading deliberately has no effect: turning on the spot shouldn't
+	// change anything.
+	const scrollSpeed = $derived(prefersReducedMotion.current ? 0 : DEFAULT_SCROLL);
 	const rotationSpeed = $derived(
 		prefersReducedMotion.current
 			? 0
