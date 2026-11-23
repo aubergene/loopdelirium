@@ -1,0 +1,30 @@
+var e={},t={},n=34,r=10,i=13;function a(e){return Function(`d`,`return {`+e.map(function(e,t){return JSON.stringify(e)+`: d[`+t+`] || ""`}).join(`,`)+`}`)}function o(e,t){var n=a(e);return function(r,i){return t(n(r),i,e)}}function s(e){var t=Object.create(null),n=[];return e.forEach(function(e){for(var r in e)r in t||n.push(t[r]=r)}),n}function c(e,t){var n=e+``,r=n.length;return r<t?Array(t-r+1).join(0)+n:n}function l(e){return e<0?`-`+c(-e,6):e>9999?`+`+c(e,6):c(e,4)}function u(e){var t=e.getUTCHours(),n=e.getUTCMinutes(),r=e.getUTCSeconds(),i=e.getUTCMilliseconds();return isNaN(e)?`Invalid Date`:l(e.getUTCFullYear(),4)+`-`+c(e.getUTCMonth()+1,2)+`-`+c(e.getUTCDate(),2)+(i?`T`+c(t,2)+`:`+c(n,2)+`:`+c(r,2)+`.`+c(i,3)+`Z`:r?`T`+c(t,2)+`:`+c(n,2)+`:`+c(r,2)+`Z`:n||t?`T`+c(t,2)+`:`+c(n,2)+`Z`:``)}function d(c){var l=RegExp(`["`+c+`
+\r]`),d=c.charCodeAt(0);function f(e,t){var n,r,i=p(e,function(e,i){if(n)return n(e,i-1);r=e,n=t?o(e,t):a(e)});return i.columns=r||[],i}function p(a,o){var s=[],c=a.length,l=0,u=0,f,p=c<=0,m=!1;a.charCodeAt(c-1)===r&&--c,a.charCodeAt(c-1)===i&&--c;function h(){if(p)return t;if(m)return m=!1,e;var o,s=l,u;if(a.charCodeAt(s)===n){for(;l++<c&&a.charCodeAt(l)!==n||a.charCodeAt(++l)===n;);return(o=l)>=c?p=!0:(u=a.charCodeAt(l++))===r?m=!0:u===i&&(m=!0,a.charCodeAt(l)===r&&++l),a.slice(s+1,o-1).replace(/""/g,`"`)}for(;l<c;){if((u=a.charCodeAt(o=l++))===r)m=!0;else if(u===i)m=!0,a.charCodeAt(l)===r&&++l;else if(u!==d)continue;return a.slice(s,o)}return p=!0,a.slice(s,c)}for(;(f=h())!==t;){for(var g=[];f!==e&&f!==t;)g.push(f),f=h();o&&(g=o(g,u++))==null||s.push(g)}return s}function m(e,t){return e.map(function(e){return t.map(function(t){return y(e[t])}).join(c)})}function h(e,t){return t??=s(e),[t.map(y).join(c)].concat(m(e,t)).join(`
+`)}function g(e,t){return t??=s(e),m(e,t).join(`
+`)}function _(e){return e.map(v).join(`
+`)}function v(e){return e.map(y).join(c)}function y(e){return e==null?``:e instanceof Date?u(e):l.test(e+=``)?`"`+e.replace(/"/g,`""`)+`"`:e}return{parse:f,parseRows:p,format:h,formatBody:g,formatRows:_,formatRow:v,formatValue:y}}var f=d(`,`),p=f.parse;f.parseRows,f.format,f.formatBody,f.formatRows,f.formatRow,f.formatValue;var m=p(`id,artist,title,label
+1,Nathan Bayliss,Geist,
+2,Nathan Bayliss,Multi-screen work (name tbc),
+3,Nathan Bayliss,Dubrovnik Ghost Series,
+4,Owen Planchart,This is not a pipe,
+5,Owen Planchart,Still Moving,"Still Moving' (2026) is a Sculptural sketchbook. A series of sleep scans translated onto wood scraps and concrete by various analogue processes in order to achieve a material language of sleep: Heavy, Broken, Light, Deep, Shallow. The cluster of quasi-abstract figures tells the body's story of one anxious night of sleep on the eve of a 20-year immigration process. The use of scrap objects and building materials speaks directly to the theme of the blemish and the texture of the analogue, it looks to make a terrain out of the juxtaposition of bodies and materials. Still Moving is a topological study of sleep space, exploring exhaustion as a canvas for transformative experiences."
+6,Owen Planchart,Dont Blink,
+7,Julian Burgess,Mobile,
+9,Mirko Febbo,ECONOMIC CORROSION,"Transforms 37 years of UK economic data (1986–2022) into a data visualisation made of rust and steel. The motors speed is directly driven by the widening gap between average income, house prices, and the cost of living. It takes abstract statistics and demonstrates how they can corrode a system over time."
+10,Mirko Febbo,it is what it is,
+11,Savannah Perry,Precarious Paths,
+12,Rafa Roeder,Performance setup,
+13,Rafa Roeder,sculpture objects,
+14,Mikhail,Generative video,
+15,Camila Colussi,Plenty of Time,"Laser engraved stone & Digital photography, Cartridge 170gsm. 2023. // The work consists of a small stone engraved with the phrase ""There's plenty of time"" and a photograph of the same stone held in the artist's hand. Described by the artist as ""a personal talisman against acceleration, a reminder to slow down"", the work embodies a wish to carry deep time and slowness with oneself."
+16,Camila Colussi,Stop Time,"Disassembled clocks in resin, different dimensions. 2020. // “I collected, disassembled, and submerged clocks in resin as if materialising the desire to stop time.” The work is a collection of disassembled clocks, submerged in cubes made of resin. The making process consisted of suspending the clock parts in cubic moulds, meticulously filled with resin layer by layer. Despite the cubical shapes, the pieces were deformed by the clock parts, leaving each one slightly deformed, as if the work itself insisted on the impossibility of the original task. The cubes also display optical distortions: as one moves around them, the internal parts appear shifted or multiplied, changing with every perspective: even disassembled and immortalised in resin, “time” refuses to stay still."
+18,Robert Hall,The Exchange,
+19,Robert Hall,Untitled Phone Chorus,
+20,Weezy,Tech 4 U,
+21,Nathan Bayliss,paintings,
+22,Lily Thomson,Châsse of the Keeper,"A châsse is a reliquary: a house for what is precious. This one keeps a computer, which displays a poem from its vital signs. Its patron is Saint Eligius, goldsmith and maker of reliquaries, protector of horses, farriers, mechanics, and electricians.
+
+The work accompanies my research into technological husbandry: the machine as creature, the technician as keeper. Our machines are bred. Parts graded at birth, the finest sold as thoroughbreds. Like any animal, they are fed, housed, and kept throughout their working life.
+
+There is no magic in electrified stone but what we believe into it."
+`,({id:e,artist:t,title:n,label:r})=>({id:e,artist:t,title:n,label:r??``}));export{m as t};
