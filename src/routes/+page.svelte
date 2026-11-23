@@ -120,11 +120,11 @@
 	</nav>
 
 	<section class="corner bottom-left" aria-labelledby="shows">
-		<h2 id="shows" class="label">Shows</h2>
-		<a class="show" href={resolve('/(content)/not-yet-but-soon')}>
-			<span class="show-title">not yet, but soon</span>
-			<span class="muted">14 Nov – 6 Dec 2024</span>
-			<span class="muted">Sugar House Island</span>
+		<h2 id="shows" class="label"><a href={resolve('/(content)/shows')}>Shows</a></h2>
+		<a class="show" href={resolve('/(content)/staying-with-the-friction')}>
+			<span class="show-title">staying with the friction</span>
+			<span class="muted">27 Nov 2026 – 10 Jan 2027</span>
+			<span class="muted">Hypha Gallery South Bank</span>
 		</a>
 	</section>
 
@@ -221,7 +221,12 @@
 		flex-direction: column;
 	}
 
+	.label a {
+		color: inherit;
+	}
+
 	.show-title,
+	.label a,
 	.top-right a {
 		text-decoration: underline;
 		text-decoration-color: rgb(200 232 255 / 0.3);
@@ -231,8 +236,10 @@
 	}
 
 	a:hover .show-title,
+	.label a:hover,
 	.top-right a:hover,
 	a:focus-visible .show-title,
+	.label a:focus-visible,
 	.top-right a:focus-visible {
 		text-decoration-color: var(--fg);
 	}
