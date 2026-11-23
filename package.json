@@ -12,7 +12,8 @@
 		"format": "prettier --write .",
 		"lint": "prettier --check .",
 		"convert-font": "tsx scripts/convert-font.ts",
-		"release": "vite build && gh-pages -d build -t"
+		"release": "vite build && gh-pages -d build -t",
+		"fetch-artworks": "tsx scripts/fetch-artworks.ts"
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-auto": "^8.0.0",
