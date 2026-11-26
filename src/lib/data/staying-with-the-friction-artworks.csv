@@ -1,5 +1,5 @@
 id,artist,title,label
-1,Nathan Bayliss,Geist,
+1,Nathan Bayliss,Geist,"A non-human agent wanders within an fractured and impressionistic environment. The agent examines the pieces and attempts to find meaning between them - guiding itself step by step, turning left and right and deciding to flee if it feels uneasy. An external voice coaxes to keep the agent exploring, encourages it to feel more at home within these mysterious locations. The wanderer gets more anxious over time, may attempt to retreat, but it can never escape - it is trapped within this loop.  This work explores the claustrophobic recursion of nostalgia, in this case, a ""memoryscape"" from archival sources from the artist's life. These locations have been scanned in 3D, some have been drawn from archival photos, and hallucinated into spatial environments. These are places of meaning and memory for the artist, but unknown to the agent that traverses between them.  Variable duration - Created in p5.js, Custom LLM, binaural field recording, generative audio."
 2,Nathan Bayliss,Multi-screen work (name tbc),
 3,Nathan Bayliss,Dubrovnik Ghost Series,
 4,Owen Planchart,This is not a pipe,
@@ -8,15 +8,20 @@ id,artist,title,label
 7,Julian Bramley Burgess,I have no doubts until I have them all,"Two mobiles reflect upon each other, one shot through with holes."
 9,Mirko Febbo,ECONOMIC CORROSION,"Transforms 37 years of UK economic data (1986–2022) into a data visualisation made of rust and steel. The motors speed is directly driven by the widening gap between average income, house prices, and the cost of living. It takes abstract statistics and demonstrates how they can corrode a system over time."
 10,Mirko Febbo,it is what it is,
-11,Savannah Perry,Precarious Paths,
+11,Savannah Perry,Precarious Paths,Reaction diffusion and hyperbolic geometry form sigils used by a witch who uses curves and angles to shift dimensions. The sigils are printed and preserved in an amber resin serving as a precarious path to dimensions that cannot be physically embodied.
 12,Rafa Roeder,Performance setup,
-13,Rafa Roeder,sculpture objects,
+13,Rafa Roeder,sculpture objects,"In An effort, Rafa Roeder considers how a machine acquires a history and a soul. Across performance, robotics and documentation, the work records the gestures, errors and incremental decisions that shape each electronic sculpture as it takes form. Cameras observe the hands, the build and the surrounding space.Rather than presenting technology as seamless or autonomous, Roeder foregrounds its construction, treating memory, care and human presence as forces that shape the machine’s identity. In its installation mode the robots are presented as electronic sculptures alongside material generated during their creation."
 14,Mikhail,Generative video,
 15,Camila Colussi,Plenty of Time,"Laser engraved stone & Digital photography, Cartridge 170gsm. 2023. // The work consists of a small stone engraved with the phrase ""There's plenty of time"" and a photograph of the same stone held in the artist's hand. Described by the artist as ""a personal talisman against acceleration, a reminder to slow down"", the work embodies a wish to carry deep time and slowness with oneself."
 16,Camila Colussi,Stop Time,"Disassembled clocks in resin, different dimensions. 2020. // “I collected, disassembled, and submerged clocks in resin as if materialising the desire to stop time.” The work is a collection of disassembled clocks, submerged in cubes made of resin. The making process consisted of suspending the clock parts in cubic moulds, meticulously filled with resin layer by layer. Despite the cubical shapes, the pieces were deformed by the clock parts, leaving each one slightly deformed, as if the work itself insisted on the impossibility of the original task. The cubes also display optical distortions: as one moves around them, the internal parts appear shifted or multiplied, changing with every perspective: even disassembled and immortalised in resin, “time” refuses to stay still."
 18,Robert Hall,The Exchange,
 19,Robert Hall,Untitled Phone Chorus,
-20,Weezy,Tech 4 U,
+20,Weezy,Tech 4 U,"TECH 4 U began its life as a workshop run by the artist, during which ten participants were introduced to lo-fi tech and guided through building their own MP3 players from scratch. They were then asked to design, make a case for, and select a track for the MP3 player that they felt reflected them and their creativity, resulting in this installation.
+
+In a world where our devices all look the same, where companies tell you what to buy, how your tech should look, function, and ‘serve’ you, this piece reminds us that there are alternatives by refusing to conform to these expectations of technology.
+
+This piece imagines tech as an extension of self-expression, and asks what the future of tech could look like if we were all given the power and the tools to make and create it for ourselves.
+_What would U make?_"
 21,Nathan Bayliss,paintings,
 22,Lily Thomson,Châsse of the Keeper,"A châsse is a reliquary: a house for what is precious. This one keeps a computer, which displays a poem from its vital signs. Its patron is Saint Eligius, goldsmith and maker of reliquaries, protector of horses, farriers, mechanics, and electricians.
 

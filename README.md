@@ -33,6 +33,11 @@ serves at the domain in `static/CNAME`. It doesn't push `main`, so `git push` to
 ## Pages
 
 - `/` — home, with the animated logo (tilt on phones, mouse on desktop)
+- `/shows` — index of all exhibitions
+- `/staying-with-the-friction` — the 2026 exhibition
+- `/staying-with-the-friction/<id>` — a minimal page per artwork, in place of wall text,
+  linked from QR codes. Addressed by the sheet's id so the codes survive renames.
+- `/staying-with-the-friction/qr-codes` — printable QR codes for those pages
 - `/not-yet-but-soon` — the 2024 exhibition; artworks come from
   `src/lib/data/not-yet-but-soon-artworks.csv`
 - `/not-yet-but-soon/cards` — printable wall labels with QR codes linking to each artwork
@@ -40,6 +45,18 @@ serves at the domain in `static/CNAME`. It doesn't push `main`, so `git push` to
   controls, **F** for fullscreen. The cursor hides when idle and the screen is kept awake.
 - `/debug/twist` — design tool for the logo's shape and motion. Settings are saved in
   the browser and shared with `/screensaver`.
+
+## Artwork data
+
+Staying with the Friction artworks come from the artists' Google Sheet:
+
+```bash
+pnpm fetch-artworks                 # download the sheet
+pnpm fetch-artworks path/to/sheet.csv  # or use a local export
+```
+
+This writes `src/lib/data/staying-with-the-friction-artworks.csv`, keeping only the
+id, artist, title and label text. The sheet's install logistics stay out of the repo.
 
 ## Fonts
 

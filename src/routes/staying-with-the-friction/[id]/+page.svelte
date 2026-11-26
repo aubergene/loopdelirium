@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { parseInline } from 'marked';
+
 	let { data } = $props();
 
 	const artwork = $derived(data.artwork);
@@ -22,7 +24,7 @@
 	<p class="artist">{artwork.artist}</p>
 
 	{#each paragraphs as paragraph}
-		<p class="text">{paragraph}</p>
+		<p class="text">{@html parseInline(paragraph)}</p>
 	{/each}
 </main>
 
