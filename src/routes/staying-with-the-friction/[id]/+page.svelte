@@ -21,7 +21,15 @@
 <main>
 	<p class="label">Staying with the Friction</p>
 	<h1>{artwork.title}</h1>
-	<p class="artist">{artwork.artist}</p>
+	<p class="artist">
+		{artwork.artist}
+		{#if artwork.instagram}
+			<a href="https://www.instagram.com/{artwork.instagram}">@{artwork.instagram}</a>
+		{/if}
+	</p>
+	{#if artwork.medium || artwork.year}
+		<p class="label details">{[artwork.medium, artwork.year].filter(Boolean).join(', ')}</p>
+	{/if}
 
 	{#each paragraphs as paragraph}
 		<p class="text">{@html parseInline(paragraph)}</p>
@@ -57,6 +65,25 @@
 		margin-bottom: 2rem;
 		color: var(--muted);
 		font-size: 1.125rem;
+	}
+
+	.artist a {
+		margin-left: 0.4em;
+		color: var(--muted);
+		text-decoration: underline;
+		text-decoration-color: rgb(200 232 255 / 0.3);
+		text-decoration-thickness: 1px;
+		text-underline-offset: 0.25em;
+	}
+
+	.artist a:hover,
+	.artist a:focus-visible {
+		color: var(--fg);
+	}
+
+	.details {
+		margin: -1.25rem 0 2rem;
+		line-height: 1.6;
 	}
 
 	.text {
