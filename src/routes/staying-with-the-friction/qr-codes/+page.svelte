@@ -12,12 +12,11 @@
 <div class="sheet">
 	{#each artworks as artwork}
 		<div class="card">
-			<QrCode value="{url}/{artwork.id}" size={120} />
 			<div>
-				<div class="id">{artwork.id}</div>
 				<div class="title">{artwork.title}</div>
 				<div class="artist">{artwork.artist}</div>
 			</div>
+			<QrCode value="{url}/{artwork.id}" size={120} />
 		</div>
 	{/each}
 </div>
@@ -31,21 +30,22 @@
 		padding: 1cm;
 		background: #fff;
 		color: #000;
-		font-family: Helvetica, sans-serif;
-		font-weight: normal;
+		font-family: 'Google Sans Flex', sans-serif;
+		font-weight: 300;
 	}
 
 	.card {
 		display: flex;
 		gap: 0.4cm;
+		justify-content: space-between;
 		align-items: center;
-		width: 8.5cm;
+		width: 9.5cm;
 		padding: 0.4cm;
 		border: 1px dashed #ccc;
 		box-sizing: border-box;
 		break-inside: avoid;
-		font-size: 12px;
-		line-height: 1.35;
+		font-size: 16px;
+		line-height: 1.3;
 	}
 
 	.card :global(img) {
@@ -53,11 +53,12 @@
 		flex-shrink: 0;
 	}
 
-	.id {
-		color: #666;
+	.title {
+		font-size: 20px;
 	}
 
-	.title {
-		font-weight: bold;
+	.artist {
+		margin-top: 0.2em;
+		color: #555;
 	}
 </style>
